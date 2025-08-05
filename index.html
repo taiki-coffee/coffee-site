@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>コーヒー豆診断</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #f8f8f8;
+      padding: 2em;
+    }
+    .question, .result {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      margin: 0.5em;
+      padding: 0.5em 1em;
+      font-size: 1em;
+    }
+    img {
+      width: 300px;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>あなたにぴったりのコーヒー豆診断</h1>
+
+  <div id="q1" class="question active">
+    <p>Q1. コーヒーに求めるのは？</p>
+    <button onclick="next('q2a')">苦味とコク</button>
+    <button onclick="next('q2b')">酸味や香り</button>
+    <button onclick="next('q2c')">バランス</button>
+  </div>
+
+  <div id="q2a" class="question">
+    <p>Q2. ミルクを入れますか？</p>
+    <button onclick="showResult('cafe_monale')">入れる</button>
+    <button onclick="next('q3a')">入れない</button>
+  </div>
+
+  <div id="q3a" class="question">
+    <p>Q3. より深い焙煎を好みますか？</p>
+    <button onclick="showResult('french')">はい</button>
+    <button onclick="showResult('black_three')">いいえ</button>
+  </div>
+
+  <div id="q2b" class="question">
+    <p>Q2. フルーティーな風味は好きですか？</p>
+    <button onclick="showResult('ethiopia')">好き</button>
+    <button onclick="showResult('mocha_java')">苦手</button>
+  </div>
+
+  <div id="q2c" class="question">
+    <p>Q2. 飲むシーンは？</p>
+    <button onclick="next('q3c')">毎日飲みたい</button>
+    <button onclick="next('q4c')">休日のご褒美</button>
+  </div>
+
+  <div id="q3c" class="question">
+    <p>Q3. 香ばしさと飲みやすさを両立したい？</p>
+    <button onclick="showResult('house_blend')">はい</button>
+    <button onclick="showResult('fazenda')">いいえ</button>
+  </div>
+
+  <div id="q4c" class="question">
+    <p>Q4. 優しい味わいを好みますか？</p>
+    <button onclick="showResult('piccolo')">はい</button>
+    <button onclick="showResult('laminita')">いいえ</button>
+  </div>
+
+  <div id="result" class="result">
+    <h2>おすすめの豆は…</h2>
+    <h3 id="bean-name"></h3>
+    <img id="bean-image" src="" alt="コーヒー豆">
+    <p id="bean-desc"></p>
+  </div>
+
+  <script>
+    const beans = {
+      cafe_monale: {
+        name: "カフェオレ モナーレ",
+        img: "img/cafe_monale.jpg",
+        desc: "ミルクと抜群の相性。まろやかで甘みのある味わい。"
+      },
+      french: {
+        name: "フレンチロースト",
+        img: "img/french_roast.jpg",
+        desc: "深煎りでスモーキー。重厚なコクが魅力。"
+      },
+      black_three: {
+        name: "ブラックスリー",
+        img: "img/black_three.jpg",
+        desc: "飲みやすくもしっかりとした味わいのブラックコーヒー。"
+      },
+      ethiopia: {
+        name: "エチオピア モカ",
+        img: "img/ethiopia_uraga.jpg",
+        desc: "華やかな香りとフルーティーな酸味が特徴。"
+      },
+      mocha_java: {
+        name: "モカジャバ",
+        img: "img/mocha_java.jpg",
+        desc: "独特のスパイシー感と軽い酸味のバランス。"
+      },
+      house_blend: {
+        name: "ハウスブレンド",
+        img: "img/house_blend.jpg",
+        desc: "どんなシーンにも合うバランスのとれた定番豆。"
+      },
+      fazenda: {
+        name: "ファゼンダバウ",
+        img: "img/fazenda.jpg",
+        desc: "ブラジル産のナッツ感とまろやかなコクが特徴。"
+      },
+      piccolo: {
+        name: "ピッコロバンビーノ",
+        img: "img/piccolo.jpg",
+        desc: "優しい味わいで、癒しの時間にぴったり。"
+      },
+      laminita: {
+        name: "コスタリカ ラミニータ",
+        img: "img/laminita.jpg",
+        desc: "上質な酸味とクリーンな後味が魅力のスペシャルティ。"
+      }
+    };
+
+    function next(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showResult(key) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      const bean = beans[key];
+      document.getElementById('bean-name').textContent = bean.name;
+      document.getElementById('bean-image').src = bean.img;
+      document.getElementById('bean-desc').textContent = bean.desc;
+      document.getElementById('result').classList.add('active');
+    }
+  </script>
+</body>
+</html>
