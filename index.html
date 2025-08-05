@@ -3,31 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>コーヒー診断 by Taiki Coffee</title>
+  <title>Taiki Coffee 診断</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 0;
       padding: 1em;
-      background-color: #f8f8f8;
-      color: #333;
+      background-color: #f9f9f9;
     }
 
     .container {
       max-width: 600px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 2em;
-      border-radius: 8px;
+      margin: auto;
+      padding: 1em;
+      background: white;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
     }
 
-    h1, h2 {
+    h1 {
       text-align: center;
-    }
-
-    .question {
-      margin-bottom: 1.5em;
+      color: #4a3c31;
     }
 
     button {
@@ -35,129 +31,119 @@
       width: 100%;
       margin: 0.5em 0;
       padding: 1em;
-      font-size: 1.1em;
+      font-size: 1em;
+      background-color: #6b4f3b;
+      color: white;
       border: none;
       border-radius: 5px;
-      background-color: #a0522d;
-      color: white;
-      cursor: pointer;
     }
 
     button:hover {
-      background-color: #8b4513;
+      background-color: #5a3f2b;
     }
 
     img {
       max-width: 100%;
       height: auto;
+      border-radius: 10px;
+      margin-top: 1em;
+    }
+
+    .question, .result {
+      display: none;
+    }
+
+    .active {
       display: block;
-      margin: 1em auto;
     }
 
     @media screen and (max-width: 600px) {
       h1 {
-        font-size: 1.5em;
+        font-size: 1.4em;
       }
-
       button {
-        font-size: 1em;
-        padding: 0.8em;
+        font-size: 0.95em;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Taiki Coffee 診断</h1>
-    <div id="question-container" class="question"></div>
-    <div id="result-container" style="display:none; text-align: center;"></div>
+    <h1>Taiki Coffee Beans 診断</h1>
+    <div id="q1" class="question active">
+      <p>どんな味が好き？</p>
+      <button onclick="next('q2a')">すっきり系</button>
+      <button onclick="next('q2b')">コクがある系</button>
+    </div>
+
+    <div id="q2a" class="question">
+      <p>酸味は？</p>
+      <button onclick="showResult('ethiopia')">好き</button>
+      <button onclick="showResult('mochajava')">控えめがいい</button>
+    </div>
+
+    <div id="q2b" class="question">
+      <p>苦味は？</p>
+      <button onclick="showResult('french')">強めがいい</button>
+      <button onclick="next('q3')">控えめがいい</button>
+    </div>
+
+    <div id="q3" class="question">
+      <p>甘さは？</p>
+      <button onclick="showResult('cafeole')">甘いのが好き</button>
+      <button onclick="showResult('espresso')">甘さよりキレ</button>
+    </div>
+
+    <div id="result" class="result">
+      <h2>あなたにおすすめの豆は…</h2>
+      <p id="beanName"></p>
+      <img id="beanImage" src="" alt="おすすめ豆">
+      <p id="beanDesc"></p>
+    </div>
   </div>
 
   <script>
-    const questions = [
-      {
-        question: "どんな気分でコーヒーを飲みたい？",
-        answers: [
-          { text: "リラックスしたい", next: 1 },
-          { text: "シャキッとしたい", next: 2 }
-        ]
+    const beans = {
+      ethiopia: {
+        name: "エチオピア",
+        image: "img/ethiopia.jpeg",
+        desc: "華やかな香りと爽やかな酸味が特徴。軽やかで飲みやすい一杯。"
       },
-      {
-        question: "味の好みは？",
-        answers: [
-          { text: "酸味が好き", next: "エチオピア" },
-          { text: "苦味が好き", next: "フレンチロースト" }
-        ]
+      mochajava: {
+        name: "モカジャバ",
+        image: "img/mochajava.jpeg",
+        desc: "やさしい酸味とマイルドな風味。バランスのとれた味わい。"
       },
-      {
-        question: "濃さは？",
-        answers: [
-          { text: "濃いめが好き", next: "エスプレッソクラシコ" },
-          { text: "軽めがいい", next: 3 }
-        ]
+      french: {
+        name: "フレンチロースト",
+        image: "img/french.jpeg",
+        desc: "深煎りで香ばしく、しっかりとした苦味が楽しめる重厚な味。"
       },
-      {
-        question: "テイストは？",
-        answers: [
-          { text: "バランス型", next: "ハウスブレンド" },
-          { text: "香り重視", next: "モカジャバ" },
-          { text: "まろやか系", next: "カフェオレモナーレ" }
-        ]
+      cafeole: {
+        name: "カフェオレモナーレ",
+        image: "img/cafeole.jpeg",
+        desc: "ミルクと相性抜群。まろやかでやさしい甘さのブレンド。"
+      },
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "img/espresso.jpeg",
+        desc: "力強い味とキレのある後味。エスプレッソ好きにぴったり。"
       }
-    ];
-
-    const beanInfo = {
-      "ハウスブレンド": { image: "img/houseblend.jpeg", desc: "バランスの取れた味わい。毎日飲みたい定番。" },
-      "モカジャバ": { image: "img/mochajava.jpeg", desc: "香り高く酸味とコクが共存する味わい。" },
-      "カフェオレモナーレ": { image: "img/cafeole.jpeg", desc: "まろやかな味わいでミルクと相性抜群。" },
-      "エスプレッソクラシコ": { image: "img/espresso.jpeg", desc: "力強い苦味と深み。エスプレッソに最適。" },
-      "フレンチロースト": { image: "img/french.jpeg", desc: "強い苦味とコク。アイスにもおすすめ。" },
-      "エチオピア": { image: "img/ethiopia.jpeg", desc: "フルーティーな酸味。華やかな香り。" }
     };
 
-    let current = 0;
-
-    function showQuestion(index) {
-      const container = document.getElementById("question-container");
-      container.innerHTML = "";
-      const q = questions[index];
-      const title = document.createElement("h2");
-      title.textContent = q.question;
-      container.appendChild(title);
-
-      q.answers.forEach(answer => {
-        const btn = document.createElement("button");
-        btn.textContent = answer.text;
-        btn.onclick = () => {
-          if (typeof answer.next === "number") {
-            showQuestion(answer.next);
-          } else {
-            showResult(answer.next);
-          }
-        };
-        container.appendChild(btn);
-      });
+    function next(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
-    function showResult(beanName) {
-      document.getElementById("question-container").style.display = "none";
-      const result = document.getElementById("result-container");
-      result.style.display = "block";
-
-      const title = document.createElement("h2");
-      title.textContent = `あなたにおすすめの豆は：${beanName}`;
-      result.appendChild(title);
-
-      const img = document.createElement("img");
-      img.src = beanInfo[beanName].image;
-      result.appendChild(img);
-
-      const desc = document.createElement("p");
-      desc.textContent = beanInfo[beanName].desc;
-      result.appendChild(desc);
+    function showResult(key) {
+      const bean = beans[key];
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById("beanName").textContent = bean.name;
+      document.getElementById("beanImage").src = bean.image;
+      document.getElementById("beanDesc").textContent = bean.desc;
+      document.getElementById("result").classList.add('active');
     }
-
-    showQuestion(current);
   </script>
 </body>
 </html>
