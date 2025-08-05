@@ -12,6 +12,7 @@
       padding: 1em;
       background-color: #f9f9f9;
     }
+
     .container {
       max-width: 600px;
       margin: auto;
@@ -20,10 +21,12 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 10px;
     }
+
     h1 {
       text-align: center;
       color: #4a3c31;
     }
+
     button {
       display: block;
       width: 100%;
@@ -35,21 +38,26 @@
       border: none;
       border-radius: 5px;
     }
+
     button:hover {
       background-color: #5a3f2b;
     }
+
     img {
       max-width: 100%;
       height: auto;
       border-radius: 10px;
       margin-top: 1em;
     }
+
     .question, .result {
       display: none;
     }
+
     .active {
       display: block;
     }
+
     @media screen and (max-width: 600px) {
       h1 {
         font-size: 1.4em;
@@ -63,18 +71,54 @@
 <body>
   <div class="container">
     <h1>Taiki Coffee Beans 診断</h1>
+
     <div id="q1" class="question active">
-      <p>あなたの好みは？</p>
-      <button onclick="showResult('espresso')">エスプレッソ</button>
-      <button onclick="showResult('house')">ハウスブレンド</button>
-      <button onclick="showResult('mochajava')">モカジャバ</button>
-      <button onclick="showResult('ethiopia')">エチオピア</button>
-      <button onclick="showResult('fazenda')">ファゼンダ</button>
-      <button onclick="showResult('laminita')">ラミニータ</button>
-      <button onclick="showResult('cafe')">カフェモナーレ</button>
-      <button onclick="showResult('french')">フレンチロースト</button>
-      <button onclick="showResult('piccolo')">ピッコロ</button>
-      <button onclick="showResult('black')">ブラックスリー</button>
+      <p>どんな味わいのコーヒーが好き？</p>
+      <button onclick="next('q2a')">すっきりとクリア</button>
+      <button onclick="next('q2b')">バランス重視</button>
+      <button onclick="next('q2c')">どっしりとコクが深い</button>
+    </div>
+
+    <div id="q2a" class="question">
+      <p>どっちのフルーティーが好き？</p>
+      <button onclick="showResult('ethiopia')">ベリー系</button>
+      <button onclick="next('q3a')">柑橘系</button>
+    </div>
+
+    <div id="q3a" class="question">
+      <p>フルーティーの中に？</p>
+      <button onclick="showResult('piccolo')">少しコクが欲しい</button>
+      <button onclick="showResult('laminita')">すっきりさわやか</button>
+    </div>
+
+    <div id="q2b" class="question">
+      <p>デザートに食べるなら？</p>
+      <button onclick="next('q3b')">チョコレートやキャラメル</button>
+      <button onclick="next('q3c')">フルーツ</button>
+    </div>
+
+    <div id="q3b" class="question">
+      <p>コーヒータイムの癒しといえば？</p>
+      <button onclick="showResult('mochajava')">香りを楽しむ</button>
+      <button onclick="showResult('blackthree')">とろっとした口当たり</button>
+    </div>
+
+    <div id="q3c" class="question">
+      <p>どちらの甘さを楽しみたい気分？</p>
+      <button onclick="showResult('house')">黒糖</button>
+      <button onclick="showResult('fazenda')">ナッツ</button>
+    </div>
+
+    <div id="q2c" class="question">
+      <p>今日はどちらになりたい気分？</p>
+      <button onclick="showResult('monale')">お嬢様</button>
+      <button onclick="next('q3d')">紳士</button>
+    </div>
+
+    <div id="q3d" class="question">
+      <p>どちらのコクを楽しみたい？</p>
+      <button onclick="showResult('french')">スモーキーで重厚なコク</button>
+      <button onclick="showResult('espresso')">ビターチョコのような少し甘味がある</button>
     </div>
 
     <div id="result" class="result">
@@ -87,17 +131,63 @@
 
   <script>
     const beans = {
-      espresso: {name: "エスプレッソ", image: "espresso.jpg", desc: "力強い味とキレのある後味。"},
-      house: {name: "ハウスブレンド", image: "house_blend.jpg", desc: "まろやかな味わいとバランスのとれた一杯。"},
-      mochajava: {name: "モカジャバ", image: "mocha_java.jpg", desc: "香り高く酸味とコクが共存する味わい。"},
-      ethiopia: {name: "エチオピア", image: "ethiopia_uraga.jpg", desc: "華やかでフローラルな香りと明るい酸味。"},
-      fazenda: {name: "ファゼンダ", image: "fazenda.jpg", desc: "ナッツのような風味と優しい甘さが特徴。"},
-      laminita: {name: "ラミニータ", image: "laminita.jpg", desc: "繊細で透明感のある味わい。"},
-      cafe: {name: "カフェモナーレ", image: "cafe_monale.jpg", desc: "深いコクとやさしい甘みの絶妙なブレンド。"},
-      french: {name: "フレンチロースト", image: "french_roast.jpg", desc: "深煎りで苦味が強く、濃厚な味わい。"},
-      piccolo: {name: "ピッコロ", image: "piccolo.jpg", desc: "しっかりしたコクと飲みごたえのある豆。"},
-      black: {name: "ブラックスリー", image: "black_three.jpg", desc: "重厚でビターなテイスト。大人な味わい。"}
+      ethiopia: {
+        name: "エチオピアモカ",
+        image: "img/ethiopia.jpg",
+        desc: "華やかな香りとベリー系の酸味が特徴。"
+      },
+      piccolo: {
+        name: "ピッコロバンビーノ",
+        image: "img/piccolo.jpg",
+        desc: "柑橘系の香りの中に少しコクがあるフレーバー。"
+      },
+      laminita: {
+        name: "コスタリカラミニータ",
+        image: "img/laminita.jpg",
+        desc: "すっきりした酸味と爽やかさが魅力。"
+      },
+      mochajava: {
+        name: "モカジャバ",
+        image: "img/mochajava.jpg",
+        desc: "香り高くやさしいバランスの取れた味わい。"
+      },
+      blackthree: {
+        name: "ブラックスリー",
+        image: "img/blackthree.jpg",
+        desc: "とろっとした口当たりと奥深い味わいが特徴。"
+      },
+      house: {
+        name: "ハウスブレンド",
+        image: "img/house.jpg",
+        desc: "黒糖のような甘さと調和の取れた飲み心地。"
+      },
+      fazenda: {
+        name: "ブラジルファゼンダ",
+        image: "img/fazenda.jpg",
+        desc: "ナッツのような風味と香ばしさが特徴。"
+      },
+      monale: {
+        name: "カフェモナーレ",
+        image: "img/monale.jpg",
+        desc: "まろやかでリッチなお嬢様ブレンド。"
+      },
+      french: {
+        name: "フレンチロースト",
+        image: "img/french.jpg",
+        desc: "スモーキーで重厚な苦味。深煎り好きにおすすめ。"
+      },
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "img/espresso.jpg",
+        desc: "ビターで甘さも感じる力強い味わい。"
+      }
     };
+
+    function next(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
     function showResult(key) {
       const bean = beans[key];
       document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
