@@ -2,146 +2,162 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>コーヒー豆診断</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>コーヒー診断 by Taiki Coffee</title>
   <style>
     body {
       font-family: sans-serif;
-      text-align: center;
+      margin: 0;
+      padding: 1em;
       background-color: #f8f8f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
       padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .question, .result {
-      display: none;
+
+    h1, h2 {
+      text-align: center;
     }
-    .active {
-      display: block;
+
+    .question {
+      margin-bottom: 1.5em;
     }
+
     button {
-      margin: 0.5em;
-      padding: 0.5em 1em;
-      font-size: 1em;
+      display: block;
+      width: 100%;
+      margin: 0.5em 0;
+      padding: 1em;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 5px;
+      background-color: #a0522d;
+      color: white;
+      cursor: pointer;
     }
+
+    button:hover {
+      background-color: #8b4513;
+    }
+
     img {
-      width: 300px;
-      margin-top: 1em;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 1em auto;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 0.8em;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>あなたにぴったりのコーヒー豆診断</h1>
-
-  <div id="q1" class="question active">
-    <p>Q1. コーヒーに求めるのは？</p>
-    <button onclick="next('q2a')">苦味とコク</button>
-    <button onclick="next('q2b')">酸味や香り</button>
-    <button onclick="next('q2c')">バランス</button>
-  </div>
-
-  <div id="q2a" class="question">
-    <p>Q2. ミルクを入れますか？</p>
-    <button onclick="showResult('cafe_monale')">入れる</button>
-    <button onclick="next('q3a')">入れない</button>
-  </div>
-
-  <div id="q3a" class="question">
-    <p>Q3. より深い焙煎を好みますか？</p>
-    <button onclick="showResult('french')">はい</button>
-    <button onclick="showResult('black_three')">いいえ</button>
-  </div>
-
-  <div id="q2b" class="question">
-    <p>Q2. フルーティーな風味は好きですか？</p>
-    <button onclick="showResult('ethiopia')">好き</button>
-    <button onclick="showResult('mocha_java')">苦手</button>
-  </div>
-
-  <div id="q2c" class="question">
-    <p>Q2. 飲むシーンは？</p>
-    <button onclick="next('q3c')">毎日飲みたい</button>
-    <button onclick="next('q4c')">休日のご褒美</button>
-  </div>
-
-  <div id="q3c" class="question">
-    <p>Q3. 香ばしさと飲みやすさを両立したい？</p>
-    <button onclick="showResult('house_blend')">はい</button>
-    <button onclick="showResult('fazenda')">いいえ</button>
-  </div>
-
-  <div id="q4c" class="question">
-    <p>Q4. 優しい味わいを好みますか？</p>
-    <button onclick="showResult('piccolo')">はい</button>
-    <button onclick="showResult('laminita')">いいえ</button>
-  </div>
-
-  <div id="result" class="result">
-    <h2>おすすめの豆は…</h2>
-    <h3 id="bean-name"></h3>
-    <img id="bean-image" src="" alt="コーヒー豆">
-    <p id="bean-desc"></p>
+  <div class="container">
+    <h1>Taiki Coffee 診断</h1>
+    <div id="question-container" class="question"></div>
+    <div id="result-container" style="display:none; text-align: center;"></div>
   </div>
 
   <script>
-    const beans = {
-      cafe_monale: {
-        name: "カフェオレ モナーレ",
-        img: "cafe_monale.jpg",
-        desc: "ミルクと抜群の相性。まろやかで甘みのある味わい。"
+    const questions = [
+      {
+        question: "どんな気分でコーヒーを飲みたい？",
+        answers: [
+          { text: "リラックスしたい", next: 1 },
+          { text: "シャキッとしたい", next: 2 }
+        ]
       },
-      french: {
-        name: "フレンチロースト",
-        img: "french_roast.jpg",
-        desc: "深煎りでスモーキー。重厚なコクが魅力。"
+      {
+        question: "味の好みは？",
+        answers: [
+          { text: "酸味が好き", next: "エチオピア" },
+          { text: "苦味が好き", next: "フレンチロースト" }
+        ]
       },
-      black_three: {
-        name: "ブラックスリー",
-        img: "black_three.jpg",
-        desc: "飲みやすくもしっかりとした味わいのブラックコーヒー。"
+      {
+        question: "濃さは？",
+        answers: [
+          { text: "濃いめが好き", next: "エスプレッソクラシコ" },
+          { text: "軽めがいい", next: 3 }
+        ]
       },
-      ethiopia: {
-        name: "エチオピア モカ",
-        img: "ethiopia_uraga.jpg",
-        desc: "華やかな香りとフルーティーな酸味が特徴。"
-      },
-      mocha_java: {
-        name: "モカジャバ",
-        img: "mocha_java.jpg",
-        desc: "独特のスパイシー感と軽い酸味のバランス。"
-      },
-      house_blend: {
-        name: "ハウスブレンド",
-        img: "house_blend.jpg",
-        desc: "どんなシーンにも合うバランスのとれた定番豆。"
-      },
-      fazenda: {
-        name: "ファゼンダバウ",
-        img: "fazenda.jpg",
-        desc: "ブラジル産のナッツ感とまろやかなコクが特徴。"
-      },
-      piccolo: {
-        name: "ピッコロバンビーノ",
-        img: "piccolo.jpg",
-        desc: "優しい味わいで、癒しの時間にぴったり。"
-      },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        img: "laminita.jpg",
-        desc: "上質な酸味とクリーンな後味が魅力のスペシャルティ。"
+      {
+        question: "テイストは？",
+        answers: [
+          { text: "バランス型", next: "ハウスブレンド" },
+          { text: "香り重視", next: "モカジャバ" },
+          { text: "まろやか系", next: "カフェオレモナーレ" }
+        ]
       }
+    ];
+
+    const beanInfo = {
+      "ハウスブレンド": { image: "img/houseblend.jpeg", desc: "バランスの取れた味わい。毎日飲みたい定番。" },
+      "モカジャバ": { image: "img/mochajava.jpeg", desc: "香り高く酸味とコクが共存する味わい。" },
+      "カフェオレモナーレ": { image: "img/cafeole.jpeg", desc: "まろやかな味わいでミルクと相性抜群。" },
+      "エスプレッソクラシコ": { image: "img/espresso.jpeg", desc: "力強い苦味と深み。エスプレッソに最適。" },
+      "フレンチロースト": { image: "img/french.jpeg", desc: "強い苦味とコク。アイスにもおすすめ。" },
+      "エチオピア": { image: "img/ethiopia.jpeg", desc: "フルーティーな酸味。華やかな香り。" }
     };
 
-    function next(id) {
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    let current = 0;
+
+    function showQuestion(index) {
+      const container = document.getElementById("question-container");
+      container.innerHTML = "";
+      const q = questions[index];
+      const title = document.createElement("h2");
+      title.textContent = q.question;
+      container.appendChild(title);
+
+      q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer.text;
+        btn.onclick = () => {
+          if (typeof answer.next === "number") {
+            showQuestion(answer.next);
+          } else {
+            showResult(answer.next);
+          }
+        };
+        container.appendChild(btn);
+      });
     }
 
-    function showResult(key) {
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-      const bean = beans[key];
-      document.getElementById('bean-name').textContent = bean.name;
-      document.getElementById('bean-image').src = bean.img;
-      document.getElementById('bean-desc').textContent = bean.desc;
-      document.getElementById('result').classList.add('active');
+    function showResult(beanName) {
+      document.getElementById("question-container").style.display = "none";
+      const result = document.getElementById("result-container");
+      result.style.display = "block";
+
+      const title = document.createElement("h2");
+      title.textContent = `あなたにおすすめの豆は：${beanName}`;
+      result.appendChild(title);
+
+      const img = document.createElement("img");
+      img.src = beanInfo[beanName].image;
+      result.appendChild(img);
+
+      const desc = document.createElement("p");
+      desc.textContent = beanInfo[beanName].desc;
+      result.appendChild(desc);
     }
+
+    showQuestion(current);
   </script>
 </body>
 </html>
