@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +12,6 @@
       padding: 1em;
       background-color: #f9f9f9;
     }
-
     .container {
       max-width: 600px;
       margin: auto;
@@ -20,12 +20,10 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 10px;
     }
-
     h1 {
       text-align: center;
       color: #4a3c31;
     }
-
     button {
       display: block;
       width: 100%;
@@ -37,26 +35,21 @@
       border: none;
       border-radius: 5px;
     }
-
     button:hover {
       background-color: #5a3f2b;
     }
-
     img {
       max-width: 100%;
       height: auto;
       border-radius: 10px;
       margin-top: 1em;
     }
-
     .question, .result {
       display: none;
     }
-
     .active {
       display: block;
     }
-
     @media screen and (max-width: 600px) {
       h1 {
         font-size: 1.4em;
@@ -71,27 +64,17 @@
   <div class="container">
     <h1>Taiki Coffee Beans 診断</h1>
     <div id="q1" class="question active">
-      <p>どんな味が好き？</p>
-      <button onclick="next('q2a')">すっきり系</button>
-      <button onclick="next('q2b')">コクがある系</button>
-    </div>
-
-    <div id="q2a" class="question">
-      <p>酸味は？</p>
-      <button onclick="showResult('ethiopia')">好き</button>
-      <button onclick="showResult('mochajava')">控えめがいい</button>
-    </div>
-
-    <div id="q2b" class="question">
-      <p>苦味は？</p>
-      <button onclick="showResult('french')">強めがいい</button>
-      <button onclick="next('q3')">控えめがいい</button>
-    </div>
-
-    <div id="q3" class="question">
-      <p>甘さは？</p>
-      <button onclick="showResult('cafeole')">甘いのが好き</button>
-      <button onclick="showResult('espresso')">甘さよりキレ</button>
+      <p>あなたの好みは？</p>
+      <button onclick="showResult('espresso')">エスプレッソ</button>
+      <button onclick="showResult('house')">ハウスブレンド</button>
+      <button onclick="showResult('mochajava')">モカジャバ</button>
+      <button onclick="showResult('ethiopia')">エチオピア</button>
+      <button onclick="showResult('fazenda')">ファゼンダ</button>
+      <button onclick="showResult('laminita')">ラミニータ</button>
+      <button onclick="showResult('cafe')">カフェモナーレ</button>
+      <button onclick="showResult('french')">フレンチロースト</button>
+      <button onclick="showResult('piccolo')">ピッコロ</button>
+      <button onclick="showResult('black')">ブラックスリー</button>
     </div>
 
     <div id="result" class="result">
@@ -104,38 +87,17 @@
 
   <script>
     const beans = {
-      ethiopia: {
-        name: "エチオピア",
-        image: "img/ethiopia.jpeg",
-        desc: "華やかな香りと爽やかな酸味が特徴。軽やかで飲みやすい一杯。"
-      },
-      mochajava: {
-        name: "モカジャバ",
-        image: "img/mochajava.jpeg",
-        desc: "やさしい酸味とマイルドな風味。バランスのとれた味わい。"
-      },
-      french: {
-        name: "フレンチロースト",
-        image: "img/french.jpeg",
-        desc: "深煎りで香ばしく、しっかりとした苦味が楽しめる重厚な味。"
-      },
-      cafeole: {
-        name: "カフェオレモナーレ",
-        image: "img/cafeole.jpeg",
-        desc: "ミルクと相性抜群。まろやかでやさしい甘さのブレンド。"
-      },
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "img/espresso.jpeg",
-        desc: "力強い味とキレのある後味。エスプレッソ好きにぴったり。"
-      }
+      espresso: {name: "エスプレッソ", image: "espresso.jpg", desc: "力強い味とキレのある後味。"},
+      house: {name: "ハウスブレンド", image: "house_blend.jpg", desc: "まろやかな味わいとバランスのとれた一杯。"},
+      mochajava: {name: "モカジャバ", image: "mocha_java.jpg", desc: "香り高く酸味とコクが共存する味わい。"},
+      ethiopia: {name: "エチオピア", image: "ethiopia_uraga.jpg", desc: "華やかでフローラルな香りと明るい酸味。"},
+      fazenda: {name: "ファゼンダ", image: "fazenda.jpg", desc: "ナッツのような風味と優しい甘さが特徴。"},
+      laminita: {name: "ラミニータ", image: "laminita.jpg", desc: "繊細で透明感のある味わい。"},
+      cafe: {name: "カフェモナーレ", image: "cafe_monale.jpg", desc: "深いコクとやさしい甘みの絶妙なブレンド。"},
+      french: {name: "フレンチロースト", image: "french_roast.jpg", desc: "深煎りで苦味が強く、濃厚な味わい。"},
+      piccolo: {name: "ピッコロ", image: "piccolo.jpg", desc: "しっかりしたコクと飲みごたえのある豆。"},
+      black: {name: "ブラックスリー", image: "black_three.jpg", desc: "重厚でビターなテイスト。大人な味わい。"}
     };
-
-    function next(id) {
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
     function showResult(key) {
       const bean = beans[key];
       document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
