@@ -23,27 +23,24 @@
 
     h1 {
       text-align: center;
-      font-size: 1.2em;
-      margin-bottom: 1em;
+      font-size: 1.5em;
     }
 
     .logo-title {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
+      text-align: center;
       font-weight: bold;
-      margin-bottom: 0.5em;
     }
 
-    .logo-title span:nth-child(1) { color: #e95c1b; }
-    .logo-title span:nth-child(2) { color: #f8c63c; margin-left: 4px; }
-    .logo-title span:nth-child(3) {
-      background: #fff;
-      color: #000;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-left: 8px;
+    .logo-title span.tullys {
+      color: #e95c1b;
+    }
+
+    .logo-title span.coffee {
+      color: #f8c63c;
+    }
+
+    .logo-title span.beans {
+      color: #ffffff;
     }
 
     button {
@@ -52,14 +49,14 @@
       margin: 0.5em 0;
       padding: 1em;
       font-size: 1em;
-      background-color: #6b4f3b;
+      background-color: #333;
       color: white;
       border: none;
       border-radius: 5px;
     }
 
     button:hover {
-      background-color: #5a3f2b;
+      background-color: #555;
     }
 
     img {
@@ -78,25 +75,32 @@
     }
 
     .bean-name {
-      font-size: 1.3em;
+      font-size: 1.5em;
       font-weight: 900;
       text-align: center;
-      background-color: #ccc;
-      color: #000;
+      background-color: #222;
       padding: 0.5em;
       border-radius: 5px;
       margin: 1em 0 0.5em 0;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.2em;
+      }
+      button {
+        font-size: 0.95em;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo-title">
-      <span>TULLY'S</span>
-      <span>COFFEE</span>
-      <span>ビーンズ診断</span>
+      <span class="tullys">TULLY'S</span>
+      <span class="coffee">COFFEE</span>
+      <span class="beans">ビーンズ診断</span>
     </div>
-    <h2>あなたにおすすめの豆は…</h2>
 
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
@@ -151,6 +155,7 @@
     </div>
 
     <div id="result" class="result">
+      <h2>あなたにおすすめの豆は…</h2>
       <div id="beanName" class="bean-name"></div>
       <img id="beanImage" src="" alt="おすすめ豆">
       <p id="beanDesc"></p>
@@ -159,50 +164,55 @@
 
   <script>
     const beans = {
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "espresso.jpg",
-        desc: "香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとも相性が良く、濃厚な一杯です。"
-      },
       houseblend: {
         name: "ハウスブレンド",
         image: "house_blend.jpg",
         desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
-      },
-      mochajava: {
-        name: "モカジャバ",
-        image: "mocha_java.jpg",
-        desc: "赤ワインのような香りと深みのあるコクが魅力です。ほんのり甘く、ミルクともよく合います。"
-      },
-      ethiopia: {
-        name: "エチオピアモカG1 ウラガナチュラル",
-        image: "ethiopia.jpg",
-        desc: "ベリーや花のような香りが華やかに広がります。明るくフルーティな味わいで、香り重視の方におすすめです。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
         image: "fazenda.jpg",
         desc: "ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。"
       },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        image: "laminita.jpg",
-        desc: "柑橘のような爽やかさとやさしい甘みが広がります。朝の一杯やリフレッシュにぴったりです。"
+      blackthree: {
+        name: "ブラックスリー",
+        image: "black_three.jpg",
+        desc: "しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。"
+      },
+      piccolo: {
+        name: "ピッコロバンビーノ",
+        image: "piccolo.jpg",
+        desc: "軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。"
+      },
+      french: {
+        name: "フレンチロースト",
+        image: "french_roast.jpg",
+        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
+      },
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "espresso.jpg",
+        desc: "香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとも相性が良く、濃厚な一杯です。"
+      },
+      mochajava: {
+        name: "モカジャバ",
+        image: "mocha_java.jpg",
+        desc: "赤ワインのような香りと深みのあるコクが魅力です。ほんのり甘く、ミルクともよく合います。"
       },
       cafemonale: {
         name: "カフェモナーレ",
         image: "cafe_monale.jpg",
         desc: "ミルクに負けないしっかりしたコクがあり、華やかな香りも楽しめます。カフェオレにぴったりのブレンドです。"
       },
-      french: {
-        name: "フレンチロースト",
-        image: "french.jpg",
-        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
+      laminita: {
+        name: "コスタリカ ラミニータ",
+        image: "laminita.jpg",
+        desc: "柑橘のような爽やかさとやさしい甘みが広がります。朝の一杯やリフレッシュにぴったりです。"
       },
-      blackthree: {
-        name: "ブラックスリー",
-        image: "black_three.jpg",
-        desc: "しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。"
+      ethiopia: {
+        name: "エチオピアモカG1ウラガナチュラル",
+        image: "ethiopia_uraga.jpg",
+        desc: "ベリーや花のような香りが華やかに広がります。明るくフルーティな味わいで、香り重視の方におすすめです。"
       }
     };
 
