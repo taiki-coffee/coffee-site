@@ -9,8 +9,8 @@
       font-family: sans-serif;
       margin: 0;
       padding: 1em;
-      background-color: #000;
-      color: #fff;
+      background-color: #000; /* 黒背景 */
+      color: white;
     }
 
     .container {
@@ -24,16 +24,8 @@
 
     h1 {
       text-align: center;
+      color: #FFA14A; /* TULLY'S オレンジ系 */
       font-weight: bold;
-      font-size: 1.5em;
-    }
-
-    h1 span.orange {
-      color: #e95c1b;
-    }
-
-    h1 span.yellow {
-      color: #f8c63c;
     }
 
     button {
@@ -72,6 +64,7 @@
       font-weight: 900;
       text-align: center;
       background-color: #222;
+      color: #FFA14A;
       padding: 0.5em;
       border-radius: 5px;
       margin: 1em 0 0.5em 0;
@@ -79,7 +72,7 @@
 
     @media screen and (max-width: 600px) {
       h1 {
-        font-size: 1.4em;
+        font-size: 1.2em;
       }
       button {
         font-size: 0.95em;
@@ -89,8 +82,7 @@
 </head>
 <body>
   <div class="container">
-    <h1><span class="orange">TULLY'S</span> <span class="yellow">COFFEE</span></h1>
-
+    <h1>TULLY'S COFFEE ビーンズ診断</h1>
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
       <button onclick="next('q2a')">すっきりとクリア</button>
@@ -98,49 +90,45 @@
       <button onclick="next('q2c')">どっしりとコクが深い</button>
     </div>
 
-    <!-- すっきりとクリア -->
+    <!-- すっきりとクリア → フルーティ → ベリー or 柑橘系 -->
     <div id="q2a" class="question">
       <p>どっちのフルーティーが好き？</p>
-      <button onclick="showResult('ethiopia')">ベリー系</button>
+      <button onclick="showResult('uraga')">ベリー系</button>
       <button onclick="next('q3a')">柑橘系</button>
     </div>
-
     <div id="q3a" class="question">
       <p>フルーティーの中に…</p>
-      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
       <button onclick="showResult('laminita')">すっきりさわやか</button>
+      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
     </div>
 
-    <!-- バランス重視 -->
+    <!-- バランス重視 → 甘さ → ナッツ or 黒糖 -->
     <div id="q2b" class="question">
       <p>デザートに食べるなら？</p>
-      <button onclick="next('q3b')">チョコレートやキャラメル</button>
+      <button onclick="next('q3b')">チョコやキャラメル</button>
       <button onclick="next('q3c')">フルーツ</button>
     </div>
-
     <div id="q3b" class="question">
       <p>コーヒータイムの癒しといえば？</p>
-      <button onclick="showResult('mochajava')">香りを楽しむ</button>
       <button onclick="showResult('blackthree')">とろっとした口当たり</button>
+      <button onclick="showResult('mochajava')">香りを楽しむ</button>
     </div>
-
     <div id="q3c" class="question">
-      <p>どちらの甘さを楽しみたい気分？</p>
-      <button onclick="showResult('houseblend')">黒糖</button>
+      <p>どちらの甘さを楽しみたい？</p>
       <button onclick="showResult('fazenda')">ナッツ</button>
+      <button onclick="showResult('houseblend')">黒糖</button>
     </div>
 
-    <!-- どっしりとコクが深い -->
+    <!-- どっしり → 紳士 or お嬢様 → 深煎り or 甘み系 -->
     <div id="q2c" class="question">
-      <p>今日はどちらになりたい気分？</p>
+      <p>今日はどんな気分？</p>
       <button onclick="showResult('cafemonale')">お嬢様</button>
       <button onclick="next('q3d')">紳士</button>
     </div>
-
     <div id="q3d" class="question">
       <p>どちらのコクを楽しみたい？</p>
-      <button onclick="showResult('french')">スモーキーで重厚なコク</button>
-      <button onclick="showResult('espresso')">ビターチョコのような甘味</button>
+      <button onclick="showResult('french')">スモーキーな苦味</button>
+      <button onclick="showResult('espresso')">ビターチョコの甘み</button>
     </div>
 
     <div id="result" class="result">
@@ -168,40 +156,35 @@
         image: "black_three.jpg",
         desc: "しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。"
       },
-      piccolo: {
-        name: "ピッコロバンビーノ",
-        image: "piccolo.jpg",
-        desc: "軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。"
+      laminita: {
+        name: "コスタリカ ラミニータ",
+        image: "laminita.jpg",
+        desc: "柑橘のような爽やかさとやさしい甘みが広がります。朝の一杯やリフレッシュにぴったりです。"
       },
-      french: {
-        name: "フレンチロースト",
-        image: "french_roast.jpg",
-        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
-      },
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "espresso.jpg",
-        desc: "香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとも相性が良く、濃厚な一杯です。"
+      uraga: {
+        name: "エチオピアモカ G1 ウラガナチュラル",
+        image: "uraga.jpg",
+        desc: "ベリーや花のような香りが華やかに広がります。明るくフルーティな味わいで、香り重視の方におすすめです。"
       },
       mochajava: {
         name: "モカジャバ",
         image: "mocha_java.jpg",
         desc: "赤ワインのような香りと深みのあるコクが魅力です。ほんのり甘く、ミルクともよく合います。"
       },
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "espresso.jpg",
+        desc: "香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとの相性も良く、濃厚な一杯です。"
+      },
+      french: {
+        name: "フレンチロースト",
+        image: "french_roast.jpg",
+        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
+      },
       cafemonale: {
         name: "カフェモナーレ",
         image: "cafe_monale.jpg",
         desc: "ミルクに負けないしっかりしたコクがあり、華やかな香りも楽しめます。カフェオレにぴったりのブレンドです。"
-      },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        image: "laminita.jpg",
-        desc: "柑橘のような爽やかさとやさしい甘みが広がります。朝の一杯やリフレッシュにぴったりです。"
-      },
-      ethiopia: {
-        name: "エチオピアモカG1ウラガナチュラル",
-        image: "ethiopia.jpg",
-        desc: "ベリーや花のような香りが華やかに広がります。明るくフルーティな味わいで、香り重視の方におすすめです。"
       }
     };
 
