@@ -9,37 +9,41 @@
       font-family: sans-serif;
       margin: 0;
       padding: 1em;
-      background-color: #f9f9f9;
+      background-color: #000;
+      color: #fff;
     }
 
     .container {
       max-width: 600px;
       margin: auto;
       padding: 1em;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #000;
       border-radius: 10px;
     }
 
     h1 {
       text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+
+    .logo-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
       font-weight: bold;
-      font-size: 1.8em;
+      margin-bottom: 0.5em;
     }
 
-    h1 span.tullys {
-      color: #e95c1b;
-    }
-
-    h1 span.coffee {
-      color: #f8c63c;
-    }
-
-    h1 span.beans {
-      color: white;
-      background-color: #4a3c31;
-      padding: 0.2em 0.4em;
+    .logo-title span:nth-child(1) { color: #e95c1b; }
+    .logo-title span:nth-child(2) { color: #f8c63c; margin-left: 4px; }
+    .logo-title span:nth-child(3) {
+      background: #fff;
+      color: #000;
+      padding: 4px 8px;
       border-radius: 4px;
+      margin-left: 8px;
     }
 
     button {
@@ -74,32 +78,25 @@
     }
 
     .bean-name {
-      font-size: 1.5em;
+      font-size: 1.3em;
       font-weight: 900;
       text-align: center;
-      background-color: #f0f0f0;
+      background-color: #ccc;
+      color: #000;
       padding: 0.5em;
       border-radius: 5px;
       margin: 1em 0 0.5em 0;
-    }
-
-    @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 1.4em;
-      }
-      button {
-        font-size: 0.95em;
-      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>
-      <span class="tullys">TULLY'S</span>
-      <span class="coffee">COFFEE</span>
-      <span class="beans">ビーンズ診断</span>
-    </h1>
+    <div class="logo-title">
+      <span>TULLY'S</span>
+      <span>COFFEE</span>
+      <span>ビーンズ診断</span>
+    </div>
+    <h2>あなたにおすすめの豆は…</h2>
 
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
@@ -108,6 +105,7 @@
       <button onclick="next('q2c')">どっしりとコクが深い</button>
     </div>
 
+    <!-- すっきりとクリア -->
     <div id="q2a" class="question">
       <p>どっちのフルーティーが好き？</p>
       <button onclick="showResult('ethiopia')">ベリー系</button>
@@ -116,10 +114,11 @@
 
     <div id="q3a" class="question">
       <p>フルーティーの中に…</p>
-      <button onclick="showResult('piccolo')">少しコクが欲しい</button>
+      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
       <button onclick="showResult('laminita')">すっきりさわやか</button>
     </div>
 
+    <!-- バランス重視 -->
     <div id="q2b" class="question">
       <p>デザートに食べるなら？</p>
       <button onclick="next('q3b')">チョコレートやキャラメル</button>
@@ -138,6 +137,7 @@
       <button onclick="showResult('fazenda')">ナッツ</button>
     </div>
 
+    <!-- どっしりとコクが深い -->
     <div id="q2c" class="question">
       <p>今日はどちらになりたい気分？</p>
       <button onclick="showResult('cafemonale')">お嬢様</button>
@@ -151,7 +151,6 @@
     </div>
 
     <div id="result" class="result">
-      <h2>あなたにおすすめの豆は…</h2>
       <div id="beanName" class="bean-name"></div>
       <img id="beanImage" src="" alt="おすすめ豆">
       <p id="beanDesc"></p>
@@ -163,7 +162,7 @@
       espresso: {
         name: "エスプレッソクラシコ",
         image: "espresso.jpg",
-        desc: "力強い味とキレのある後味。エスプレッソ好きにぴったり。"
+        desc: "香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとも相性が良く、濃厚な一杯です。"
       },
       houseblend: {
         name: "ハウスブレンド",
@@ -173,12 +172,12 @@
       mochajava: {
         name: "モカジャバ",
         image: "mocha_java.jpg",
-        desc: "やさしい酸味とマイルドな風味。バランスのとれた味わい。"
+        desc: "赤ワインのような香りと深みのあるコクが魅力です。ほんのり甘く、ミルクともよく合います。"
       },
       ethiopia: {
-        name: "エチオピアモカG1ウラガナチュラル",
-        image: "ethiopia_uraga.jpg",
-        desc: "華やかな香りと爽やかな酸味が特徴。軽やかで飲みやすい一杯。"
+        name: "エチオピアモカG1 ウラガナチュラル",
+        image: "ethiopia.jpg",
+        desc: "ベリーや花のような香りが華やかに広がります。明るくフルーティな味わいで、香り重視の方におすすめです。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
@@ -188,22 +187,17 @@
       laminita: {
         name: "コスタリカ ラミニータ",
         image: "laminita.jpg",
-        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
+        desc: "柑橘のような爽やかさとやさしい甘みが広がります。朝の一杯やリフレッシュにぴったりです。"
       },
       cafemonale: {
         name: "カフェモナーレ",
         image: "cafe_monale.jpg",
-        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
+        desc: "ミルクに負けないしっかりしたコクがあり、華やかな香りも楽しめます。カフェオレにぴったりのブレンドです。"
       },
       french: {
         name: "フレンチロースト",
-        image: "french_roast.jpg",
+        image: "french.jpg",
         desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
-      },
-      piccolo: {
-        name: "ピッコロバンビーノ",
-        image: "piccolo.jpg",
-        desc: "軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。"
       },
       blackthree: {
         name: "ブラックスリー",
