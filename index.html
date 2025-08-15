@@ -8,7 +8,7 @@
   :root{
     --bg:#000;
     --fg:#fff;
-    --accent:#AE2573; /* アクセント */
+    --accent:#AE2573;
     --card:#111;
     --muted:#cfcfcf;
   }
@@ -21,10 +21,12 @@
   header{padding:26px 16px 8px; text-align:center}
   h1{
     margin:0; font-weight:800; line-height:1.15;
-    font-size: clamp(28px, 5vw, 40px); /* 少し小さめ */
-    letter-spacing:.02em;
+    font-size: clamp(28px, 5vw, 40px); letter-spacing:.02em;
   }
-  h1 span{display:block}
+  .title-line1{display:block;}
+  .tullys{color:#e95c1b;}
+  .coffee{color:#f8c63c;}
+  .title-line2{display:block;color:#fff;}
   .sub{opacity:.8; font-size:.95rem; margin-top:8px;}
 
   main{max-width:980px; margin:0 auto; padding: 12px 16px 96px;}
@@ -40,7 +42,6 @@
   }
 
   .options{display:grid; gap:12px}
-  /* 最新デザインの選択肢ボタン */
   .btn{
     width:100%; display:block; text-align:left; padding:14px 16px; border-radius:12px;
     border:1px solid #333; background:#0f0f0f; color:var(--fg); cursor:pointer; font-size:1rem;
@@ -69,13 +70,12 @@
 
   .hide{display:none}
 
-  /* 結果 */
   .result-title{
     font-size: clamp(26px, 4.6vw, 38px);
     font-weight:900; margin:0 0 8px; letter-spacing:.01em;
   }
   .bean-name{
-    font-size: clamp(28px, 5.2vw, 44px); /* 最も太く大きく */
+    font-size: clamp(28px, 5.2vw, 44px);
     font-weight:1000; line-height:1.15;
   }
   .desc{color:var(--muted); font-size:1.05rem}
@@ -94,7 +94,7 @@
 
   footer{
     position:fixed; right:10px; bottom:10px;
-    background:#FF6FAE; /* ピンク地に白文字（前回同様） */
+    background:#FF6FAE;
     color:#fff; padding:6px 10px; border-radius:8px; font-weight:700; box-shadow:0 6px 20px rgba(0,0,0,.35);
     font-size: clamp(12px, 2vw, 14px);
   }
@@ -105,42 +105,36 @@
 <body>
   <header>
     <h1>
-      <span>TULLY'S COFFEE</span>
-      <span>ビーンズ診断</span>
+      <span class="title-line1">
+        <span class="tullys">TULLY'S</span> <span class="coffee">COFFEE</span>
+      </span>
+      <span class="title-line2">ビーンズ診断</span>
     </h1>
     <div class="sub">好みを選ぶだけ。最適な1杯をおすすめします。</div>
   </header>
 
   <main>
-    <!-- 診断カード -->
     <section id="quiz" class="card">
       <div class="qno" id="qno"></div>
       <div class="question" id="question"></div>
-
       <div class="options" id="options"></div>
-
       <div class="progress"><div class="bar" id="bar"></div></div>
-
       <div class="navs">
         <button class="btn ghost" id="backBtn">戻る</button>
         <button class="btn primary" id="skipBtn">スキップ</button>
       </div>
     </section>
 
-    <!-- 結果カード -->
     <section id="result" class="card hide">
       <div class="grid">
         <figure class="figure">
           <img id="beanImg" alt="">
         </figure>
-
         <div>
           <div class="result-title">あなたにおすすめの豆は</div>
           <div class="bean-name" id="beanName"></div>
           <p class="desc" id="beanDesc"></p>
-
           <div class="tags" id="beanTags"></div>
-
           <div class="muted" style="margin-top:16px">※ 気分が変わったら、下のボタンでやり直せます。</div>
           <div class="navs" style="margin-top:10px">
             <button class="btn ghost" onclick="restart()">はじめから</button>
@@ -153,249 +147,93 @@
   <footer>タリーズコーヒー　イオンモール筑紫野</footer>
 
 <script>
-/* =========================
- * 画像の拡張子フォールバック (.jpg -> .png)
- * ========================= */
-function imgPath(baseName){
-  // まず .jpg を試し、失敗したら .png に差し替えるためのプレースホルダを返す
-  // 実際の差し替えは onerror で行う
-  return `./images/${baseName}.jpg`;
-}
-
-/* =========================
- * データ定義（ファイル名に完全対応）
- * ========================= */
 const BEANS = {
-  house_blend: {
-    id: "house_blend",
-    name: "ハウスブレンド",
-    desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。",
-    tags:["バランス","毎日飲みやすい","中煎り"],
-    imageBase:"house_blend"
-  },
-  fazenda: {
-    id: "fazenda",
-    name: "ブラジル ファゼンダ",
-    desc: "ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。",
-    tags:["ナッツ系","甘み","中煎り〜中深煎り"],
-    imageBase:"fazenda"
-  },
-  black_three: {
-    id: "black_three",
-    name: "ブラックスリー",
-    desc: "しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。",
-    tags:["力強い","ブラック向き","中深煎り〜深煎り"],
-    imageBase:"black_three"
-  },
-  piccolo: {
-    id: "piccolo",
-    name: "ピッコロバンビーノ",
-    desc: "軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。",
-    tags:["軽やか","マイルド","朝に◎"],
-    imageBase:"piccolo"
-  },
-  french_roast: {
-    id: "french_roast",
-    name: "フレンチロースト",
-    desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。",
-    tags:["深煎り","スモーキー","ビター"],
-    imageBase:"french_roast"
-  },
-  espresso: {
-    id: "espresso",
-    name: "エスプレッソクラシコ",
-    desc: "ミルクとも相性の良い濃厚なコクと甘み。エスプレッソやラテに合うブレンドです。",
-    tags:["ラテ向き","濃厚","中深煎り〜深煎り"],
-    imageBase:"espresso"
-  },
-  mocha_java: {
-    id: "mocha_java",
-    name: "モカジャバ",
-    desc: "カカオ感とやわらかな果実味の調和。コクと華やかさを両立したクラシックブレンド。",
-    tags:["チョコ系","やさしい酸","中煎り"],
-    imageBase:"mocha_java"
-  },
-  cafe_monale: {
-    id: "cafe_monale",
-    name: "カフェモナーレ",
-    desc: "なめらかな口当たりとやさしい甘み。毎日飲みやすい“やさしめ”のテイスト。",
-    tags:["やさしい甘み","スムース","ライト〜中煎り"],
-    imageBase:"cafe_monale"
-  },
-  laminita: {
-    id: "laminita",
-    name: "コスタリカ ラミニータ",
-    desc: "クリーンで明るい酸、オレンジのような爽やかさ。後味はすっきりと上品。",
-    tags:["クリーン","シトラス","ライト〜中煎り"],
-    imageBase:"laminita"
-  },
-  ethiopia_uraga: {
-    id: "ethiopia_uraga",
-    name: "エチオピア モカG1 ウラガ ナチュラル",
-    desc: "ベリーのような華やかな香りとジューシーな果実味。香り重視の方におすすめ。",
-    tags:["フルーティ","アロマ","ライト〜中煎り"],
-    imageBase:"ethiopia_uraga"
-  }
+  house_blend:{name:"ハウスブレンド",desc:"ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。",tags:["バランス","毎日飲みやすい","中煎り"],imageBase:"house_blend"},
+  fazenda:{name:"ブラジル ファゼンダ",desc:"ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。",tags:["ナッツ系","甘み","中煎り〜中深煎り"],imageBase:"fazenda"},
+  black_three:{name:"ブラックスリー",desc:"しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。",tags:["力強い","ブラック向き","中深煎り〜深煎り"],imageBase:"black_three"},
+  piccolo:{name:"ピッコロバンビーノ",desc:"軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。",tags:["軽やか","マイルド","朝に◎"],imageBase:"piccolo"},
+  french_roast:{name:"フレンチロースト",desc:"深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。",tags:["深煎り","スモーキー","ビター"],imageBase:"french_roast"},
+  espresso:{name:"エスプレッソクラシコ",desc:"ミルクとも相性の良い濃厚なコクと甘み。エスプレッソやラテに合うブレンドです。",tags:["ラテ向き","濃厚","中深煎り〜深煎り"],imageBase:"espresso"},
+  mocha_java:{name:"モカジャバ",desc:"カカオ感とやわらかな果実味の調和。コクと華やかさを両立したクラシックブレンド。",tags:["チョコ系","やさしい酸","中煎り"],imageBase:"mocha_java"},
+  cafe_monale:{name:"カフェモナーレ",desc:"なめらかな口当たりとやさしい甘み。毎日飲みやすい“やさしめ”のテイスト。",tags:["やさしい甘み","スムース","ライト〜中煎り"],imageBase:"cafe_monale"},
+  laminita:{name:"コスタリカ ラミニータ",desc:"クリーンで明るい酸、オレンジのような爽やかさ。後味はすっきりと上品。",tags:["クリーン","シトラス","ライト〜中煎り"],imageBase:"laminita"},
+  ethiopia_uraga:{name:"エチオピア モカG1 ウラガ ナチュラル",desc:"ベリーのような華やかな香りとジューシーな果実味。香り重視の方におすすめ。",tags:["フルーティ","アロマ","ライト〜中煎り"],imageBase:"ethiopia_uraga"}
 };
 
-/* 質問（これまで同様の内容） */
 const QUESTIONS = [
-  {
-    q: "どんな焙煎度が好き？",
-    options: [
-      {label:"ライト〜中煎り（軽やか）", score:{piccolo:1, laminita:2, ethiopia_uraga:2, house_blend:1, cafe_monale:1}},
-      {label:"中煎り（バランス）", score:{house_blend:2, fazenda:1, mocha_java:1, laminita:1}},
-      {label:"中深煎り（コク重視）", score:{black_three:2, espresso:2, fazenda:1, house_blend:1}},
-      {label:"深煎り（ビター）", score:{french_roast:3, black_three:2, espresso:1}}
-    ]
-  },
-  {
-    q: "酸味の強さは？",
-    options: [
-      {label:"しっかり感じたい（明るい酸）", score:{ethiopia_uraga:3, laminita:2, house_blend:1}},
-      {label:"ほどほど（バランス）", score:{house_blend:2, mocha_java:1, piccolo:1}},
-      {label:"弱めが好き", score:{fazenda:2, black_three:1, french_roast:2, espresso:1}}
-    ]
-  },
-  {
-    q: "コク・ボディ感は？",
-    options: [
-      {label:"軽めでスッキリ", score:{piccolo:2, laminita:1, house_blend:1}},
-      {label:"中くらい（ちょうどよく）", score:{house_blend:2, fazenda:1, mocha_java:1, cafe_monale:1}},
-      {label:"しっかり（重厚）", score:{black_three:2, french_roast:2, espresso:2}}
-    ]
-  },
-  {
-    q: "香りのタイプは？",
-    options: [
-      {label:"フルーティで華やか", score:{ethiopia_uraga:3, laminita:1, mocha_java:1}},
-      {label:"ナッツ/チョコ系の香ばしさ", score:{fazenda:3, mocha_java:2, black_three:1}},
-      {label:"スモーキー/ロースト感", score:{french_roast:3, black_three:1}}
-    ]
-  },
-  {
-    q: "飲み方は？",
-    options: [
-      {label:"ブラックで飲むことが多い", score:{black_three:2, french_roast:2, house_blend:1, ethiopia_uraga:1}},
-      {label:"ミルクと合わせる（ラテ等）", score:{espresso:3, mocha_java:1, fazenda:1}},
-      {label:"どちらも同じくらい", score:{house_blend:2, cafe_monale:1}}
-    ]
-  },
-  {
-    q: "シーンを選ぶなら？",
-    options: [
-      {label:"朝、軽やかに", score:{piccolo:3, house_blend:1}},
-      {label:"仕事中にバランス良く", score:{house_blend:2, fazenda:1, cafe_monale:1}},
-      {label:"夜、ビターにじっくり", score:{french_roast:3, black_three:2}}
-    ]
-  },
-  {
-    q: "チャレンジ度合いは？",
-    options: [
-      {label:"定番・はずさない", score:{house_blend:3, fazenda:1, cafe_monale:1}},
-      {label:"少し個性がほしい", score:{mocha_java:2, laminita:1, black_three:1}},
-      {label:"香りで驚きたい", score:{ethiopia_uraga:3}}
-    ]
-  }
+  {q:"どんな焙煎度が好き？",options:[
+    {label:"ライト〜中煎り（軽やか）",score:{piccolo:1,laminita:2,ethiopia_uraga:2,house_blend:1,cafe_monale:1}},
+    {label:"中煎り（バランス）",score:{house_blend:2,fazenda:1,mocha_java:1,laminita:1}},
+    {label:"中深煎り（コク重視）",score:{black_three:2,espresso:2,fazenda:1,house_blend:1}},
+    {label:"深煎り（ビター）",score:{french_roast:3,black_three:2,espresso:1}}
+  ]},
+  {q:"酸味の強さは？",options:[
+    {label:"しっかり感じたい（明るい酸）",score:{ethiopia_uraga:3,laminita:2,house_blend:1}},
+    {label:"ほどほど（バランス）",score:{house_blend:2,mocha_java:1,piccolo:1}},
+    {label:"弱めが好き",score:{fazenda:2,black_three:1,french_roast:2,espresso:1}}
+  ]},
+  {q:"コク・ボディ感は？",options:[
+    {label:"軽めでスッキリ",score:{piccolo:2,laminita:1,house_blend:1}},
+    {label:"中くらい（ちょうどよく）",score:{house_blend:2,fazenda:1,mocha_java:1,cafe_monale:1}},
+    {label:"しっかり（重厚）",score:{black_three:2,french_roast:2,espresso:2}}
+  ]},
+  {q:"香りのタイプは？",options:[
+    {label:"フルーティで華やか",score:{ethiopia_uraga:3,laminita:1,mocha_java:1}},
+    {label:"ナッツ/チョコ系の香ばしさ",score:{fazenda:3,mocha_java:2,black_three:1}},
+    {label:"スモーキー/ロースト感",score:{french_roast:3,black_three:1}}
+  ]},
+  {q:"飲み方は？",options:[
+    {label:"ブラックで飲むことが多い",score:{black_three:2,french_roast:2,house_blend:1,ethiopia_uraga:1}},
+    {label:"ミルクと合わせる（ラテ等）",score:{espresso:3,mocha_java:1,fazenda:1}},
+    {label:"どちらも同じくらい",score:{house_blend:2,cafe_monale:1}}
+  ]},
+  {q:"シーンを選ぶなら？",options:[
+    {label:"朝、軽やかに",score:{piccolo:3,house_blend:1}},
+    {label:"仕事中にバランス良く",score:{house_blend:2,fazenda:1,cafe_monale:1}},
+    {label:"夜、ビターにじっくり",score:{french_roast:3,black_three:2}}
+  ]},
+  {q:"チャレンジ度合いは？",options:[
+    {label:"定番・はずさない",score:{house_blend:3,fazenda:1,cafe_monale:1}},
+    {label:"少し個性がほしい",score:{mocha_java:2,laminita:1,black_three:1}},
+    {label:"香りで驚きたい",score:{ethiopia_uraga:3}}
+  ]}
 ];
 
-/* =========================
- * ロジック
- * ========================= */
-let current = 0;
-const scores = {};
-Object.keys(BEANS).forEach(k => scores[k]=0);
-
-const els = {
-  quiz: document.getElementById('quiz'),
-  result: document.getElementById('result'),
-  qno: document.getElementById('qno'),
-  question: document.getElementById('question'),
-  options: document.getElementById('options'),
-  bar: document.getElementById('bar'),
-  back: document.getElementById('backBtn'),
-  skip: document.getElementById('skipBtn'),
-
-  beanImg: document.getElementById('beanImg'),
-  beanName: document.getElementById('beanName'),
-  beanDesc: document.getElementById('beanDesc'),
-  beanTags: document.getElementById('beanTags'),
-};
+let current=0;
+const scores={};Object.keys(BEANS).forEach(k=>scores[k]=0);
+const els={quiz:document.getElementById('quiz'),result:document.getElementById('result'),qno:document.getElementById('qno'),question:document.getElementById('question'),options:document.getElementById('options'),bar:document.getElementById('bar'),back:document.getElementById('backBtn'),skip:document.getElementById('skipBtn'),beanImg:document.getElementById('beanImg'),beanName:document.getElementById('beanName'),beanDesc:document.getElementById('beanDesc'),beanTags:document.getElementById('beanTags')};
 
 function render(){
-  const q = QUESTIONS[current];
-  els.qno.textContent = `質問 ${current+1} / ${QUESTIONS.length}`;
-  els.question.textContent = q.q;
-  els.options.innerHTML = "";
-  q.options.forEach((opt)=>{
-    const b = document.createElement('button');
-    b.className = 'btn';
-    b.textContent = opt.label;
-    b.onclick = ()=>{
-      Object.entries(opt.score).forEach(([k,v])=> scores[k]+=v);
-      next();
-    };
+  const q=QUESTIONS[current];
+  els.qno.textContent=`質問 ${current+1} / ${QUESTIONS.length}`;
+  els.question.textContent=q.q;
+  els.options.innerHTML="";
+  q.options.forEach(opt=>{
+    const b=document.createElement('button');b.className='btn';b.textContent=opt.label;
+    b.onclick=()=>{Object.entries(opt.score).forEach(([k,v])=>scores[k]+=v);next();};
     els.options.appendChild(b);
   });
-  els.back.disabled = current===0;
-  els.bar.style.width = `${(current)/QUESTIONS.length*100}%`;
+  els.back.disabled=current===0;
+  els.bar.style.width=`${(current)/QUESTIONS.length*100}%`;
 }
-
 function next(){
-  if(current < QUESTIONS.length-1){
-    current++;
-    render();
-  }else{
-    els.bar.style.width = `100%`;
-    showResult();
-  }
+  if(current<QUESTIONS.length-1){current++;render();}
+  else{els.bar.style.width=`100%`;showResult();}
 }
-
-els.back.onclick = ()=>{
-  if(current===0) return;
-  current--;
-  render();
-};
-els.skip.onclick = next;
+els.back.onclick=()=>{if(current===0)return;current--;render();};
+els.skip.onclick=next;
 
 function showResult(){
-  const ranked = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-  const topKey = ranked[0][0];
-  const top = BEANS[topKey];
-
-  els.beanName.textContent = top.name;
-  els.beanDesc.textContent = top.desc;
-
-  // 画像：.jpg を優先、失敗したら .png に切替
-  els.beanImg.onerror = function(){
-    const now = els.beanImg.getAttribute('src') || "";
-    if(now.endsWith('.jpg')){
-      els.beanImg.src = now.replace('.jpg', '.png');
-    }
-  };
-  els.beanImg.src = imgPath(top.imageBase);
-  els.beanImg.alt = top.name;
-
-  els.beanTags.innerHTML = "";
-  top.tags.forEach(t=>{
-    const s=document.createElement('span'); s.className='tag'; s.textContent=t;
-    els.beanTags.appendChild(s);
-  });
-
-  els.quiz.classList.add('hide');
-  els.result.classList.remove('hide');
+  const ranked=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topKey=ranked[0][0],top=BEANS[topKey];
+  els.beanName.textContent=top.name;
+  els.beanDesc.textContent=top.desc;
+  els.beanImg.src=`./images/${top.imageBase}`;
+  els.beanTags.innerHTML="";
+  top.tags.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;els.beanTags.appendChild(s);});
+  els.quiz.classList.add('hide');els.result.classList.remove('hide');
 }
-
-function restart(){
-  current = 0;
-  Object.keys(scores).forEach(k => scores[k]=0);
-  els.result.classList.add('hide');
-  els.quiz.classList.remove('hide');
-  els.bar.style.width = "0%";
-  render();
-}
-
-// 初期表示
+function restart(){current=0;Object.keys(scores).forEach(k=>scores[k]=0);els.result.classList.add('hide');els.quiz.classList.remove('hide');els.bar.style.width="0%";render();}
 render();
 </script>
 </body>
