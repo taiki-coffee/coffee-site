@@ -148,16 +148,16 @@
 
 <script>
 const BEANS = {
-  house_blend:{name:"ハウスブレンド",desc:"ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。",tags:["バランス","毎日飲みやすい","中煎り"],imageBase:"house_blend"},
-  fazenda:{name:"ブラジル ファゼンダ",desc:"ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。",tags:["ナッツ系","甘み","中煎り〜中深煎り"],imageBase:"fazenda"},
-  black_three:{name:"ブラックスリー",desc:"しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。",tags:["力強い","ブラック向き","中深煎り〜深煎り"],imageBase:"black_three"},
-  piccolo:{name:"ピッコロバンビーノ",desc:"軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。",tags:["軽やか","マイルド","朝に◎"],imageBase:"piccolo"},
-  french_roast:{name:"フレンチロースト",desc:"深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。",tags:["深煎り","スモーキー","ビター"],imageBase:"french_roast"},
-  espresso:{name:"エスプレッソクラシコ",desc:"ミルクとも相性の良い濃厚なコクと甘み。エスプレッソやラテに合うブレンドです。",tags:["ラテ向き","濃厚","中深煎り〜深煎り"],imageBase:"espresso"},
-  mocha_java:{name:"モカジャバ",desc:"カカオ感とやわらかな果実味の調和。コクと華やかさを両立したクラシックブレンド。",tags:["チョコ系","やさしい酸","中煎り"],imageBase:"mocha_java"},
-  cafe_monale:{name:"カフェモナーレ",desc:"なめらかな口当たりとやさしい甘み。毎日飲みやすい“やさしめ”のテイスト。",tags:["やさしい甘み","スムース","ライト〜中煎り"],imageBase:"cafe_monale"},
-  laminita:{name:"コスタリカ ラミニータ",desc:"クリーンで明るい酸、オレンジのような爽やかさ。後味はすっきりと上品。",tags:["クリーン","シトラス","ライト〜中煎り"],imageBase:"laminita"},
-  ethiopia_uraga:{name:"エチオピア モカG1 ウラガ ナチュラル",desc:"ベリーのような華やかな香りとジューシーな果実味。香り重視の方におすすめ。",tags:["フルーティ","アロマ","ライト〜中煎り"],imageBase:"ethiopia_uraga"}
+  house_blend:{name:"ハウスブレンド",image:"house_blend.jpg",desc:"ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。",tags:["バランス","毎日飲みやすい","中煎り"]},
+  fazenda:{name:"ブラジル ファゼンダ",image:"fazenda.jpg",desc:"ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。",tags:["ナッツ系","甘み","中煎り〜中深煎り"]},
+  black_three:{name:"ブラックスリー",image:"black_three.jpg",desc:"しっかりしたコクと甘み、香ばしさが絶妙なバランスです。ブラックで楽しみたい方にぴったりです。",tags:["力強い","ブラック向き","中深煎り〜深煎り"]},
+  piccolo:{name:"ピッコロバンビーノ",image:"piccolo.jpg",desc:"軽やかでマイルド、キャラメルのような香ばしさが特徴です。酸味も心地よく、すっきり飲めます。朝にピッタリ。",tags:["軽やか","マイルド","朝に◎"]},
+  french_roast:{name:"フレンチロースト",image:"french_roast.jpg",desc:"深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。",tags:["深煎り","スモーキー","ビター"]},
+  espresso:{name:"エスプレッソクラシコ",image:"espresso.jpg",desc:"香ばしくリッチなコクで、ナッツのような甘さが感じられます。ミルクとも相性が良く、濃厚な一杯です。",tags:["ラテ向き","濃厚","中深煎り〜深煎り"]},
+  mocha_java:{name:"モカジャバ",image:"mocha_java.jpg",desc:"カカオ感とやわらかな果実味の調和。コクと華やかさを両立したクラシックブレンド。",tags:["チョコ系","やさしい酸","中煎り"]},
+  cafe_monale:{name:"カフェモナーレ",image:"cafe_monale.jpg",desc:"なめらかな口当たりとやさしい甘み。毎日飲みやすい“やさしめ”のテイスト。",tags:["やさしい甘み","スムース","ライト〜中煎り"]},
+  laminita:{name:"コスタリカ ラミニータ",image:"laminita.jpg",desc:"クリーンで明るい酸、オレンジのような爽やかさ。後味はすっきりと上品。",tags:["クリーン","シトラス","ライト〜中煎り"]},
+  ethiopia_uraga:{name:"エチオピア モカG1 ウラガ ナチュラル",image:"ethiopia_uraga.jpg",desc:"ベリーのような華やかな香りとジューシーな果実味。香り重視の方におすすめ。",tags:["フルーティ","アロマ","ライト〜中煎り"]}
 };
 
 const QUESTIONS = [
@@ -228,13 +228,9 @@ function showResult(){
   const topKey=ranked[0][0],top=BEANS[topKey];
   els.beanName.textContent=top.name;
   els.beanDesc.textContent=top.desc;
-  els.beanImg.src=`./images/${top.imageBase}`;
+  els.beanImg.src=`./images/${top.image}`;
   els.beanTags.innerHTML="";
   top.tags.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;els.beanTags.appendChild(s);});
   els.quiz.classList.add('hide');els.result.classList.remove('hide');
 }
-function restart(){current=0;Object.keys(scores).forEach(k=>scores[k]=0);els.result.classList.add('hide');els.quiz.classList.remove('hide');els.bar.style.width="0%";render();}
-render();
-</script>
-</body>
-</html>
+function restart(){current=0;Object.keys(scores).forEach(k=>scores[k]=0);
