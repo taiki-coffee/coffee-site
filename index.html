@@ -1,205 +1,257 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TULLY'S COFFEE ビーンズ診断</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TULLY’S COFFEE ビーンズ診断</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      color: #fff;
       font-family: sans-serif;
-      text-align: center;
+      margin: 0;
+      padding: 1em;
+      background-color: #000;
+      color: #333;
     }
-    header {
-      padding: 1rem;
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 1em;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      border-radius: 10px;
     }
+
     h1 {
-      font-size: 2.2rem;
-      line-height: 1.2;
-      margin: 0.5em 0;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.4em;
+      line-height: 1.3;
     }
-    .tullys {
+
+    h1 span.tullys {
       color: #e95c1b;
     }
-    .coffee {
+
+    h1 span.coffee {
       color: #f8c63c;
     }
-    .beans {
-      color: white;
+
+    h1 span.beans {
+      color: #fff;
+      background: none;
+      display: block;
     }
-    .question {
-      margin: 2em auto;
-      max-width: 80%;
-    }
+
     button {
       display: block;
-      margin: 1em auto;
-      padding: 1em 2em;
-      font-size: 1rem;
-      background-color: #e95c1b;
+      width: 100%;
+      margin: 0.5em 0;
+      padding: 1em;
+      font-size: 1em;
+      background-color: #6b4f3b;
       color: white;
       border: none;
       border-radius: 5px;
     }
-    .result {
-      margin-top: 2em;
+
+    button:hover {
+      background-color: #5a3f2b;
     }
-    .result img {
-      width: 80%;
-      max-width: 300px;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-top: 1em;
     }
-    footer {
+
+    .question, .result {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .bean-name {
+      font-size: 1.5em;
+      font-weight: 900;
+      text-align: center;
+      background-color: #f0f0f0;
+      padding: 0.5em;
+      border-radius: 5px;
+      margin: 1em 0 0.5em 0;
+    }
+
+    .footer {
       position: fixed;
       right: 0;
       bottom: 0;
-      background-color: #e94c8a;
+      background-color: #e95caa;
       color: white;
-      font-size: 0.8rem;
-      padding: 0.4em 0.6em;
+      font-size: 1em;
+      padding: 0.5em 1em;
       border-top-left-radius: 10px;
+      z-index: 999;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.2em;
+      }
+
+      button {
+        font-size: 0.95em;
+      }
+
+      .footer {
+        font-size: 0.85em;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
+  <div class="container">
     <h1>
-      <span class="tullys">TULLY'S</span>
-      <span class="coffee">COFFEE</span><br>
+      <span class="tullys">TULLY’S</span><br>
+      <span class="coffee">COFFEE</span>
       <span class="beans">ビーンズ診断</span>
     </h1>
-  </header>
 
-  <div id="app" class="question"></div>
+    <!-- 質問フロー -->
+    <div id="q1" class="question active">
+      <p>どんな味わいのコーヒーが好き？</p>
+      <button onclick="next('q2a')">すっきりとクリア</button>
+      <button onclick="next('q2b')">バランス重視</button>
+      <button onclick="next('q2c')">どっしりとコクが深い</button>
+    </div>
 
-  <footer>
-    タリーズコーヒー　イオンモール筑紫野
-  </footer>
+    <!-- すっきり -->
+    <div id="q2a" class="question">
+      <p>どっちのフルーティーが好き？</p>
+      <button onclick="showResult('ethiopia')">ベリー系</button>
+      <button onclick="next('q3a')">柑橘系</button>
+    </div>
+
+    <div id="q3a" class="question">
+      <p>フルーティーの中に…</p>
+      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
+      <button onclick="showResult('laminita')">すっきりさわやか</button>
+    </div>
+
+    <!-- バランス重視 -->
+    <div id="q2b" class="question">
+      <p>デザートに食べるなら？</p>
+      <button onclick="next('q3b')">チョコやキャラメル</button>
+      <button onclick="next('q3c')">フルーツ</button>
+    </div>
+
+    <div id="q3b" class="question">
+      <p>コーヒータイムの癒しといえば？</p>
+      <button onclick="showResult('mochajava')">香りを楽しむ</button>
+      <button onclick="showResult('blackthree')">とろっとした口当たり</button>
+    </div>
+
+    <div id="q3c" class="question">
+      <p>どちらの甘さ？</p>
+      <button onclick="showResult('houseblend')">黒糖</button>
+      <button onclick="showResult('fazenda')">ナッツ</button>
+    </div>
+
+    <!-- コク深い -->
+    <div id="q2c" class="question">
+      <p>今日はどちらになりたい気分？</p>
+      <button onclick="showResult('cafemonale')">お嬢様</button>
+      <button onclick="next('q3d')">紳士</button>
+    </div>
+
+    <div id="q3d" class="question">
+      <p>どちらのコク？</p>
+      <button onclick="showResult('french')">スモーキー</button>
+      <button onclick="showResult('espresso')">ビターな甘味</button>
+    </div>
+
+    <!-- 診断結果 -->
+    <div id="result" class="result">
+      <h2>あなたにおすすめの豆は…</h2>
+      <div id="beanName" class="bean-name"></div>
+      <img id="beanImage" src="" alt="おすすめ豆">
+      <p id="beanDesc"></p>
+      <button onclick="restart()">はじめに戻る</button>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
   <script>
-    const app = document.getElementById("app");
-
-    const BEANS = {
-      house_blend: {
+    const beans = {
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "espresso.jpg",
+        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
+      },
+      houseblend: {
         name: "ハウスブレンド",
         image: "house_blend.jpg",
         desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
       },
-      french_roast: {
-        name: "フレンチロースト",
-        image: "french_roast.jpg",
-        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
+      mochajava: {
+        name: "モカジャバ",
+        image: "mocha_java.jpg",
+        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
+      },
+      ethiopia: {
+        name: "エチオピアモカ",
+        image: "ethiopia_uraga.jpg",
+        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
         image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。"
+        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
       },
-      ethiopia: {
-        name: "エチオピアモカG1ウラガナチュラル",
-        image: "ethiopia_uraga.jpg",
-        desc: "ベリーのような華やかな香りとフルーティーな酸味が魅力。軽やかな飲み口で優雅なひとときを演出します。"
+      laminita: {
+        name: "コスタリカ ラミニータ",
+        image: "laminita.jpg",
+        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
+      },
+      cafemonale: {
+        name: "カフェモナーレ",
+        image: "cafe_monale.jpg",
+        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
+      },
+      french: {
+        name: "フレンチロースト",
+        image: "french_roast.jpg",
+        desc: "スモーキーで深いコク。力強く重厚な味わい。"
+      },
+      blackthree: {
+        name: "ブラックスリー",
+        image: "black_three.jpg",
+        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
       }
     };
 
-    const questions = [
-      {
-        text: "どんな味わいのコーヒーが好き？",
-        answers: [
-          { text: "すっきりとクリア", next: 1 },
-          { text: "バランス重視", next: 2 },
-          { text: "どっしりとコクが深い", next: 3 }
-        ]
-      },
-      {
-        text: "どっちのフルーティーが好き？",
-        answers: [
-          { text: "ベリー系", result: "ethiopia" },
-          { text: "柑橘系", next: 4 }
-        ]
-      },
-      {
-        text: "デザートに食べるなら？",
-        answers: [
-          { text: "チョコやキャラメル", next: 5 },
-          { text: "フルーツ", next: 6 }
-        ]
-      },
-      {
-        text: "今日はどちらになりたい気分？",
-        answers: [
-          { text: "お嬢様", next: 7 },
-          { text: "紳士", next: 8 }
-        ]
-      },
-      {
-        text: "フルーティーの中に…",
-        answers: [
-          { text: "少しコクが欲しい", result: "house_blend" },
-          { text: "すっきりさわやか", result: "ethiopia" }
-        ]
-      },
-      {
-        text: "コーヒータイムの癒しといえば？",
-        answers: [
-          { text: "香りを楽しむ", result: "ethiopia" },
-          { text: "とろっとした口当たり", result: "house_blend" }
-        ]
-      },
-      {
-        text: "どちらの甘さを楽しみたい？",
-        answers: [
-          { text: "黒糖", result: "house_blend" },
-          { text: "ナッツ", result: "fazenda" }
-        ]
-      },
-      {
-        text: "どちらのコクを楽しみたい？",
-        answers: [
-          { text: "スモーキーで重厚", result: "french_roast" },
-          { text: "ビターチョコのような少し甘味", result: "house_blend" }
-        ]
-      },
-      {
-        text: "スモーキーな苦味か、程よいコク？",
-        answers: [
-          { text: "スモーキー", result: "french_roast" },
-          { text: "程よいコク", result: "house_blend" }
-        ]
-      }
-    ];
-
-    let current = 0;
-
-    function renderQuestion(index) {
-      const q = questions[index];
-      app.innerHTML = `<h2>${q.text}</h2>`;
-      q.answers.forEach(a => {
-        const btn = document.createElement("button");
-        btn.textContent = a.text;
-        btn.onclick = () => {
-          if (a.result) renderResult(a.result);
-          else renderQuestion(a.next);
-        };
-        app.appendChild(btn);
-      });
+    function next(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
-    function renderResult(key) {
-      const b = BEANS[key];
-      app.innerHTML = `
-        <div class="result">
-          <h2 style="font-weight:bold; font-size:1.5rem;">${b.name}</h2>
-          <img src="${b.image}" alt="${b.name}">
-          <p>${b.desc}</p>
-          <button onclick="renderQuestion(0)">最初に戻る</button>
-        </div>
-      `;
+    function showResult(key) {
+      const bean = beans[key];
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById("beanName").textContent = bean.name;
+      document.getElementById("beanImage").src = bean.image;
+      document.getElementById("beanDesc").textContent = bean.desc;
+      document.getElementById("result").classList.add('active');
     }
 
-    renderQuestion(current);
+    function restart() {
+      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
+      document.getElementById("q1").classList.add('active');
+    }
   </script>
 </body>
 </html>
