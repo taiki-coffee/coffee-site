@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TULLY’S COFFEE ビーンズ診断</title>
   <style>
     body {
@@ -10,7 +10,7 @@
       margin: 0;
       padding: 1em;
       background-color: #000;
-      color: #333;
+      color: white;
     }
 
     .container {
@@ -35,7 +35,7 @@
     }
 
     h1 span.beans {
-      color: #fff;
+      color: white;
       background: none;
     }
 
@@ -74,7 +74,7 @@
       font-size: 1.5em;
       font-weight: 900;
       text-align: center;
-      background-color: #f0f0f0;
+      background-color: #333;
       padding: 0.5em;
       border-radius: 5px;
       margin: 1em 0 0.5em 0;
@@ -91,13 +91,27 @@
       border-top-left-radius: 10px;
       z-index: 999;
     }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 1.3em;
+      }
+
+      button {
+        font-size: 0.95em;
+      }
+
+      .footer {
+        font-size: 0.8em;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>
-      <span class="tullys">TULLY’S</span><br>
-      <span class="coffee">COFFEE</span>
+      <span class="tullys">TULLY’S</span>
+      <span class="coffee">COFFEE</span><br>
       <span class="beans">ビーンズ診断</span>
     </h1>
 
@@ -109,7 +123,7 @@
       <button onclick="next('q2c')">どっしりとコクが深い</button>
     </div>
 
-    <!-- すっきりとクリア -->
+    <!-- すっきり -->
     <div id="q2a" class="question">
       <p>どっちのフルーティーが好き？</p>
       <button onclick="showResult('ethiopia')">ベリー系</button>
@@ -141,7 +155,7 @@
       <button onclick="showResult('fazenda')">ナッツ</button>
     </div>
 
-    <!-- コクが深い -->
+    <!-- コク深い -->
     <div id="q2c" class="question">
       <p>今日はどちらになりたい気分？</p>
       <button onclick="showResult('cafemonale')">お嬢様</button>
