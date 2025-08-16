@@ -1,257 +1,170 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TULLY’S COFFEE ビーンズ診断</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TULLY'S COFFEE ビーンズ診断</title>
   <style>
     body {
       font-family: sans-serif;
-      margin: 0;
-      padding: 1em;
-      background-color: #000; /* 黒背景 */
-      color: #333;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 1em;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
-      border-radius: 10px;
-    }
-
-    h1 {
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.6em;
-      line-height: 1.3;
-    }
-
-    h1 span.tullys {
-      color: #e95c1b;
-    }
-
-    h1 span.coffee {
-      color: #f8c63c;
-    }
-
-    h1 span.beans {
+      background-color: #222;
       color: #fff;
-      background: none;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
-
-    button {
-      display: block;
-      width: 100%;
-      margin: 0.5em 0;
-      padding: 1em;
-      font-size: 1em;
-      background-color: #6b4f3b;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    button:hover {
-      background-color: #5a3f2b;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
+    h1 {
+      font-size: 2.2em;
       margin-top: 1em;
     }
-
-    .question, .result {
-      display: none;
+    .tullys {
+      color: #e95c1b;
+      font-weight: bold;
     }
-
-    .active {
+    .coffee {
+      color: #f8c63c;
+      font-weight: bold;
+    }
+    .beans {
+      color: white;
       display: block;
+      margin-top: 0.3em;
     }
-
-    .bean-name {
-      font-size: 1.5em;
-      font-weight: 900;
-      text-align: center;
-      background-color: #f0f0f0;
-      padding: 0.5em;
+    #question-container, #result-container {
+      margin-top: 2em;
+    }
+    button {
+      background-color: #f8c63c;
+      color: #222;
+      padding: 0.5em 1em;
+      font-size: 1em;
+      border: none;
       border-radius: 5px;
-      margin: 1em 0 0.5em 0;
+      margin: 1em;
+      cursor: pointer;
     }
-
     .footer {
       position: fixed;
-      right: 0;
       bottom: 0;
-      background-color: #e95caa; /* ピンク背景 */
+      width: 100%;
+      background-color: #e94c8a;
       color: white;
+      padding: 0.5em;
       font-size: 0.9em;
-      padding: 0.5em 1em;
-      border-top-left-radius: 10px;
-      z-index: 999;
     }
-
-    @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 1.3em;
-      }
-
-      button {
-        font-size: 0.95em;
-      }
-
-      .footer {
-        font-size: 0.8em;
-      }
+    img {
+      max-width: 300px;
+      margin-top: 1em;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>
-      <span class="tullys">TULLY’S</span><br>
-      <span class="coffee">COFFEE</span>
-      <span class="beans">ビーンズ診断</span>
-    </h1>
+  <h1><span class="tullys">TULLY'S</span> <span class="coffee">COFFEE</span><span class="beans">ビーンズ診断</span></h1>
 
-    <!-- 質問フロー -->
-    <div id="q1" class="question active">
-      <p>どんな味わいのコーヒーが好き？</p>
-      <button onclick="next('q2a')">すっきりとクリア</button>
-      <button onclick="next('q2b')">バランス重視</button>
-      <button onclick="next('q2c')">どっしりとコクが深い</button>
-    </div>
-
-    <!-- すっきり -->
-    <div id="q2a" class="question">
-      <p>どっちのフルーティーが好き？</p>
-      <button onclick="showResult('ethiopia')">ベリー系</button>
-      <button onclick="next('q3a')">柑橘系</button>
-    </div>
-
-    <div id="q3a" class="question">
-      <p>フルーティーの中に…</p>
-      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
-      <button onclick="showResult('laminita')">すっきりさわやか</button>
-    </div>
-
-    <!-- バランス重視 -->
-    <div id="q2b" class="question">
-      <p>デザートに食べるなら？</p>
-      <button onclick="next('q3b')">チョコやキャラメル</button>
-      <button onclick="next('q3c')">フルーツ</button>
-    </div>
-
-    <div id="q3b" class="question">
-      <p>コーヒータイムの癒しといえば？</p>
-      <button onclick="showResult('mochajava')">香りを楽しむ</button>
-      <button onclick="showResult('blackthree')">とろっとした口当たり</button>
-    </div>
-
-    <div id="q3c" class="question">
-      <p>どちらの甘さ？</p>
-      <button onclick="showResult('houseblend')">黒糖</button>
-      <button onclick="showResult('fazenda')">ナッツ</button>
-    </div>
-
-    <!-- コク深い -->
-    <div id="q2c" class="question">
-      <p>今日はどちらになりたい気分？</p>
-      <button onclick="showResult('cafemonale')">お嬢様</button>
-      <button onclick="next('q3d')">紳士</button>
-    </div>
-
-    <div id="q3d" class="question">
-      <p>どちらのコク？</p>
-      <button onclick="showResult('french')">スモーキー</button>
-      <button onclick="showResult('espresso')">ビターな甘味</button>
-    </div>
-
-    <!-- 診断結果 -->
-    <div id="result" class="result">
-      <h2>あなたにおすすめの豆は…</h2>
-      <div id="beanName" class="bean-name"></div>
-      <img id="beanImage" src="" alt="おすすめ豆">
-      <p id="beanDesc"></p>
-      <button onclick="restart()">はじめに戻る</button>
-    </div>
+  <div id="question-container">
+    <p id="question"></p>
+    <div id="answers"></div>
   </div>
 
-  <!-- 右下の常時表示フッター -->
-  <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
+  <div id="result-container" style="display: none;">
+    <h2 id="bean-name"></h2>
+    <img id="bean-image" src="" alt="結果画像">
+    <p id="bean-description"></p>
+    <button onclick="restartQuiz()">最初に戻る</button>
+  </div>
 
-  <!-- JavaScript -->
+  <div class="footer">
+    タリーズコーヒー　イオンモール筑紫野
+  </div>
+
   <script>
-    const beans = {
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "espresso.jpg",
-        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
-      },
-      houseblend: {
+    const BEANS = {
+      house_blend: {
         name: "ハウスブレンド",
         image: "house_blend.jpg",
         desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
       },
-      mochajava: {
-        name: "モカジャバ",
-        image: "mocha_java.jpg",
-        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
-      },
-      ethiopia: {
-        name: "エチオピアモカ",
-        image: "ethiopia_uraga.jpg",
-        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
+      french_roast: {
+        name: "フレンチロースト",
+        image: "french_roast.jpg",
+        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力です。ビター派に人気の力強い味わいです。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
         image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
+        desc: "ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。"
       },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        image: "laminita.jpg",
-        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
-      },
-      cafemonale: {
-        name: "カフェモナーレ",
-        image: "cafe_monale.jpg",
-        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
-      },
-      french: {
-        name: "フレンチロースト",
-        image: "french_roast.jpg",
-        desc: "スモーキーで深いコク。力強く重厚な味わい。"
-      },
-      blackthree: {
-        name: "ブラックスリー",
-        image: "black_three.jpg",
-        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
+      ethiopia_uraga: {
+        name: "エチオピアモカG1ウラガナチュラル",
+        image: "ethiopia_uraga.jpg",
+        desc: "フルーティーな香りと酸味が特徴。華やかな香りが好きな方におすすめです。"
       }
     };
 
-    function next(id) {
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    const QUESTIONS = [
+      {
+        question: "コーヒーはどんな味が好き？",
+        answers: [
+          { text: "まろやか", next: 1 },
+          { text: "しっかり", next: 2 }
+        ]
+      },
+      {
+        question: "甘みと酸味、どちらを重視する？",
+        answers: [
+          { text: "甘み", result: "fazenda" },
+          { text: "酸味", result: "ethiopia_uraga" }
+        ]
+      },
+      {
+        question: "コクと苦味、どちらが好み？",
+        answers: [
+          { text: "コク", result: "house_blend" },
+          { text: "苦味", result: "french_roast" }
+        ]
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function showQuestion(index) {
+      const q = QUESTIONS[index];
+      document.getElementById("question").textContent = q.question;
+      const answerDiv = document.getElementById("answers");
+      answerDiv.innerHTML = "";
+      q.answers.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans.text;
+        btn.onclick = () => {
+          if (ans.next !== undefined) {
+            currentIndex = ans.next;
+            showQuestion(currentIndex);
+          } else {
+            showResult(ans.result);
+          }
+        };
+        answerDiv.appendChild(btn);
+      });
     }
 
     function showResult(key) {
-      const bean = beans[key];
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-      document.getElementById("beanName").textContent = bean.name;
-      document.getElementById("beanImage").src = bean.image;
-      document.getElementById("beanDesc").textContent = bean.desc;
-      document.getElementById("result").classList.add('active');
+      const bean = BEANS[key];
+      document.getElementById("bean-name").textContent = bean.name;
+      document.getElementById("bean-image").src = bean.image;
+      document.getElementById("bean-description").textContent = bean.desc;
+      document.getElementById("question-container").style.display = "none";
+      document.getElementById("result-container").style.display = "block";
     }
 
-    function restart() {
-      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
-      document.getElementById("q1").classList.add('active');
+    function restartQuiz() {
+      currentIndex = 0;
+      document.getElementById("result-container").style.display = "none";
+      document.getElementById("question-container").style.display = "block";
+      showQuestion(currentIndex);
     }
+
+    showQuestion(currentIndex);
   </script>
 </body>
 </html>
