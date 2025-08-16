@@ -6,79 +6,81 @@
   <title>TULLY'S COFFEE ビーンズ診断</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #222;
-      color: #fff;
-      text-align: center;
       margin: 0;
       padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    header {
+      padding: 1rem;
     }
     h1 {
-      font-size: 2.2em;
-      margin-top: 1em;
+      font-size: 2.2rem;
+      line-height: 1.2;
+      margin: 0.5em 0;
     }
     .tullys {
       color: #e95c1b;
-      font-weight: bold;
     }
     .coffee {
       color: #f8c63c;
-      font-weight: bold;
     }
     .beans {
       color: white;
-      display: block;
-      margin-top: 0.3em;
     }
-    #question-container, #result-container {
-      margin-top: 2em;
+    .question {
+      margin: 2em auto;
+      max-width: 80%;
     }
     button {
-      background-color: #f8c63c;
-      color: #222;
-      padding: 0.5em 1em;
-      font-size: 1em;
+      display: block;
+      margin: 1em auto;
+      padding: 1em 2em;
+      font-size: 1rem;
+      background-color: #e95c1b;
+      color: white;
       border: none;
       border-radius: 5px;
-      margin: 1em;
-      cursor: pointer;
     }
-    .footer {
+    .result {
+      margin-top: 2em;
+    }
+    .result img {
+      width: 80%;
+      max-width: 300px;
+    }
+    footer {
       position: fixed;
+      right: 0;
       bottom: 0;
-      width: 100%;
       background-color: #e94c8a;
       color: white;
-      padding: 0.5em;
-      font-size: 0.9em;
-    }
-    img {
-      max-width: 300px;
-      margin-top: 1em;
-      border-radius: 10px;
+      font-size: 0.8rem;
+      padding: 0.4em 0.6em;
+      border-top-left-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <h1><span class="tullys">TULLY'S</span> <span class="coffee">COFFEE</span><span class="beans">ビーンズ診断</span></h1>
+  <header>
+    <h1>
+      <span class="tullys">TULLY'S</span>
+      <span class="coffee">COFFEE</span><br>
+      <span class="beans">ビーンズ診断</span>
+    </h1>
+  </header>
 
-  <div id="question-container">
-    <p id="question"></p>
-    <div id="answers"></div>
-  </div>
+  <div id="app" class="question"></div>
 
-  <div id="result-container" style="display: none;">
-    <h2 id="bean-name"></h2>
-    <img id="bean-image" src="" alt="結果画像">
-    <p id="bean-description"></p>
-    <button onclick="restartQuiz()">最初に戻る</button>
-  </div>
-
-  <div class="footer">
+  <footer>
     タリーズコーヒー　イオンモール筑紫野
-  </div>
+  </footer>
 
   <script>
+    const app = document.getElementById("app");
+
     const BEANS = {
       house_blend: {
         name: "ハウスブレンド",
@@ -95,76 +97,109 @@
         image: "fazenda.jpg",
         desc: "ナッツのような香ばしさとコクのある甘みが特徴です。おやつと一緒に楽しみたくなる味わいです。"
       },
-      ethiopia_uraga: {
+      ethiopia: {
         name: "エチオピアモカG1ウラガナチュラル",
         image: "ethiopia_uraga.jpg",
-        desc: "フルーティーな香りと酸味が特徴。華やかな香りが好きな方におすすめです。"
+        desc: "ベリーのような華やかな香りとフルーティーな酸味が魅力。軽やかな飲み口で優雅なひとときを演出します。"
       }
     };
 
-    const QUESTIONS = [
+    const questions = [
       {
-        question: "コーヒーはどんな味が好き？",
+        text: "どんな味わいのコーヒーが好き？",
         answers: [
-          { text: "まろやか", next: 1 },
-          { text: "しっかり", next: 2 }
+          { text: "すっきりとクリア", next: 1 },
+          { text: "バランス重視", next: 2 },
+          { text: "どっしりとコクが深い", next: 3 }
         ]
       },
       {
-        question: "甘みと酸味、どちらを重視する？",
+        text: "どっちのフルーティーが好き？",
         answers: [
-          { text: "甘み", result: "fazenda" },
-          { text: "酸味", result: "ethiopia_uraga" }
+          { text: "ベリー系", result: "ethiopia" },
+          { text: "柑橘系", next: 4 }
         ]
       },
       {
-        question: "コクと苦味、どちらが好み？",
+        text: "デザートに食べるなら？",
         answers: [
-          { text: "コク", result: "house_blend" },
-          { text: "苦味", result: "french_roast" }
+          { text: "チョコやキャラメル", next: 5 },
+          { text: "フルーツ", next: 6 }
+        ]
+      },
+      {
+        text: "今日はどちらになりたい気分？",
+        answers: [
+          { text: "お嬢様", next: 7 },
+          { text: "紳士", next: 8 }
+        ]
+      },
+      {
+        text: "フルーティーの中に…",
+        answers: [
+          { text: "少しコクが欲しい", result: "house_blend" },
+          { text: "すっきりさわやか", result: "ethiopia" }
+        ]
+      },
+      {
+        text: "コーヒータイムの癒しといえば？",
+        answers: [
+          { text: "香りを楽しむ", result: "ethiopia" },
+          { text: "とろっとした口当たり", result: "house_blend" }
+        ]
+      },
+      {
+        text: "どちらの甘さを楽しみたい？",
+        answers: [
+          { text: "黒糖", result: "house_blend" },
+          { text: "ナッツ", result: "fazenda" }
+        ]
+      },
+      {
+        text: "どちらのコクを楽しみたい？",
+        answers: [
+          { text: "スモーキーで重厚", result: "french_roast" },
+          { text: "ビターチョコのような少し甘味", result: "house_blend" }
+        ]
+      },
+      {
+        text: "スモーキーな苦味か、程よいコク？",
+        answers: [
+          { text: "スモーキー", result: "french_roast" },
+          { text: "程よいコク", result: "house_blend" }
         ]
       }
     ];
 
-    let currentIndex = 0;
+    let current = 0;
 
-    function showQuestion(index) {
-      const q = QUESTIONS[index];
-      document.getElementById("question").textContent = q.question;
-      const answerDiv = document.getElementById("answers");
-      answerDiv.innerHTML = "";
-      q.answers.forEach((ans, i) => {
+    function renderQuestion(index) {
+      const q = questions[index];
+      app.innerHTML = `<h2>${q.text}</h2>`;
+      q.answers.forEach(a => {
         const btn = document.createElement("button");
-        btn.textContent = ans.text;
+        btn.textContent = a.text;
         btn.onclick = () => {
-          if (ans.next !== undefined) {
-            currentIndex = ans.next;
-            showQuestion(currentIndex);
-          } else {
-            showResult(ans.result);
-          }
+          if (a.result) renderResult(a.result);
+          else renderQuestion(a.next);
         };
-        answerDiv.appendChild(btn);
+        app.appendChild(btn);
       });
     }
 
-    function showResult(key) {
-      const bean = BEANS[key];
-      document.getElementById("bean-name").textContent = bean.name;
-      document.getElementById("bean-image").src = bean.image;
-      document.getElementById("bean-description").textContent = bean.desc;
-      document.getElementById("question-container").style.display = "none";
-      document.getElementById("result-container").style.display = "block";
+    function renderResult(key) {
+      const b = BEANS[key];
+      app.innerHTML = `
+        <div class="result">
+          <h2 style="font-weight:bold; font-size:1.5rem;">${b.name}</h2>
+          <img src="${b.image}" alt="${b.name}">
+          <p>${b.desc}</p>
+          <button onclick="renderQuestion(0)">最初に戻る</button>
+        </div>
+      `;
     }
 
-    function restartQuiz() {
-      currentIndex = 0;
-      document.getElementById("result-container").style.display = "none";
-      document.getElementById("question-container").style.display = "block";
-      showQuestion(currentIndex);
-    }
-
-    showQuestion(currentIndex);
+    renderQuestion(current);
   </script>
 </body>
 </html>
