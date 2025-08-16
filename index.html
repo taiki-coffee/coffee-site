@@ -26,19 +26,11 @@
       line-height: 1.3;
     }
 
-    h1 span.tullys {
-      color: #e95c1b;
-    }
+    h1 span.tullys { color: #e95c1b; }
+    h1 span.coffee { color: #f8c63c; }
+    h1 span.beans  { color: white; background: none; }
 
-    h1 span.coffee {
-      color: #f8c63c;
-    }
-
-    h1 span.beans {
-      color: white;
-      background: none;
-    }
-
+    /* ボタン */
     button {
       display: block;
       width: 100%;
@@ -49,11 +41,11 @@
       color: white;
       border: none;
       border-radius: 5px;
+      transition: background-color .15s ease, transform .15s ease;
+      cursor: pointer;
     }
-
-    button:hover {
-      background-color: #5a3f2b;
-    }
+    button:hover { background-color: #5a3f2b; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
 
     img {
       max-width: 100%;
@@ -62,13 +54,8 @@
       margin-top: 1em;
     }
 
-    .question, .result {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
+    .question, .result { display: none; }
+    .active { display: block; }
 
     .bean-name {
       font-size: 1.5em;
@@ -84,7 +71,7 @@
       position: fixed;
       right: 0;
       bottom: 0;
-      background-color: #e95caa;
+      background-color: #e95caa; /* ピンク地に白文字 */
       color: white;
       font-size: 0.9em;
       padding: 0.5em 1em;
@@ -92,18 +79,40 @@
       z-index: 999;
     }
 
+    /* === 数直線（中央）＋ 左：現在 右：合計 === */
+    .progressline{
+      display: grid;
+      grid-template-columns: 48px 1fr 48px; /* 左:現在 / 中央:線 / 右:合計 */
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 22px;
+    }
+    .progress-n{
+      text-align: center;
+      font-weight: 800;
+      color: #fff;
+      opacity: .95;
+      user-select: none;
+    }
+    .progress-rail{
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: #1b1b1b;
+      border: 1px solid #262626;
+      overflow: hidden;
+    }
+    .progress-fill{
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 0%;
+      background: #e95c1b;           /* 進行色：TULLY'Sオレンジ */
+      transition: width .25s ease;
+    }
+
     @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 1.3em;
-      }
-
-      button {
-        font-size: 0.95em;
-      }
-
-      .footer {
-        font-size: 0.8em;
-      }
+      h1 { font-size: 1.3em; }
+      button { font-size: 0.95em; }
+      .footer { font-size: 0.8em; }
     }
   </style>
 </head>
@@ -115,19 +124,28 @@
       <span class="beans">ビーンズ診断</span>
     </h1>
 
+    <!-- 数直線（中央）／左：現在の問題数／右：合計問題数 -->
+    <div class="progressline">
+      <span id="currIdx" class="progress-n">1</span>
+      <div class="progress-rail">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <span id="totalCount" class="progress-n">3</span>
+    </div>
+
     <!-- 質問フロー -->
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
-      <button onclick="next('q2a')">すっきりとクリア</button>
-      <button onclick="next('q2b')">バランス重視</button>
-      <button onclick="next('q2c')">どっしりとコクが深い</button>
+      <button onclick="goNext('q2a')">すっきりとクリア</button>
+      <button onclick="goNext('q2b')">バランス重視</button>
+      <button onclick="goNext('q2c')">どっしりとコクが深い</button>
     </div>
 
     <!-- すっきり -->
     <div id="q2a" class="question">
       <p>どっちのフルーティーが好き？</p>
       <button onclick="showResult('ethiopia')">ベリー系</button>
-      <button onclick="next('q3a')">柑橘系</button>
+      <button onclick="goNext('q3a')">柑橘系</button>
     </div>
 
     <div id="q3a" class="question">
@@ -139,8 +157,8 @@
     <!-- バランス重視 -->
     <div id="q2b" class="question">
       <p>デザートに食べるなら？</p>
-      <button onclick="next('q3b')">チョコやキャラメル</button>
-      <button onclick="next('q3c')">フルーツ</button>
+      <button onclick="goNext('q3b')">チョコやキャラメル</button>
+      <button onclick="goNext('q3c')">フルーツ</button>
     </div>
 
     <div id="q3b" class="question">
@@ -159,7 +177,7 @@
     <div id="q2c" class="question">
       <p>今日はどちらになりたい気分？</p>
       <button onclick="showResult('cafemonale')">お嬢様</button>
-      <button onclick="next('q3d')">紳士</button>
+      <button onclick="goNext('q3d')">紳士</button>
     </div>
 
     <div id="q3d" class="question">
@@ -181,72 +199,58 @@
   <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
   <script>
+    /* ========= 画像と文言（あなたの送信コードを踏襲） ========= */
     const beans = {
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "espresso.jpg",
-        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
-      },
-      houseblend: {
-        name: "ハウスブレンド",
-        image: "house_blend.jpg",
-        desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
-      },
-      mochajava: {
-        name: "モカジャバ",
-        image: "mocha_java.jpg",
-        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
-      },
-      ethiopia: {
-        name: "エチオピアモカ",
-        image: "ethiopia_uraga.jpg",
-        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
-      },
-      fazenda: {
-        name: "ブラジル ファゼンダ",
-        image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
-      },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        image: "laminita.jpg",
-        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
-      },
-      cafemonale: {
-        name: "カフェモナーレ",
-        image: "cafe_monale.jpg",
-        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
-      },
-      french: {
-        name: "フレンチロースト",
-        image: "french_roast.jpg",
-        desc: "スモーキーで深いコク。力強く重厚な味わい。"
-      },
-      blackthree: {
-        name: "ブラックスリー",
-        image: "black_three.jpg",
-        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
-      }
+      espresso:    { name: "エスプレッソクラシコ",   image: "espresso.jpg",        desc: "力強い味とビターチョコのような甘みを併せ持つ。" },
+      houseblend:  { name: "ハウスブレンド",         image: "house_blend.jpg",      desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。" },
+      mochajava:   { name: "モカジャバ",             image: "mocha_java.jpg",       desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。" },
+      ethiopia:    { name: "エチオピアモカ",         image: "ethiopia_uraga.jpg",   desc: "華やかなベリーの香りと爽やかな酸味が特徴。" },
+      fazenda:     { name: "ブラジル ファゼンダ",    image: "fazenda.jpg",          desc: "ナッツのような香ばしさと甘みが調和した味わい。" },
+      laminita:    { name: "コスタリカ ラミニータ",  image: "laminita.jpg",         desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。" },
+      cafemonale:  { name: "カフェモナーレ",         image: "cafe_monale.jpg",      desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。" },
+      french:      { name: "フレンチロースト",       image: "french_roast.jpg",     desc: "スモーキーで深いコク。力強く重厚な味わい。" },
+      blackthree:  { name: "ブラックスリー",         image: "black_three.jpg",      desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。" }
     };
 
-    function next(id) {
+    /* ========= 数直線（中央）進行：分岐でも使える深さベース =========
+       深さの定義：q1=1, q2*=2, q3*=3, result=3
+    ================================================================ */
+    const DEPTH_MAP = { q1:1, q2a:2, q2b:2, q2c:2, q3a:3, q3b:3, q3c:3, q3d:3, result:3 };
+    const TOTAL_DEPTH = 3; // 合計問題数（最大深さ）
+
+    function updateProgressLine(activeId){
+      const curr = Math.min(DEPTH_MAP[activeId] || 1, TOTAL_DEPTH);
+      document.getElementById('currIdx').textContent    = curr;
+      document.getElementById('totalCount').textContent = TOTAL_DEPTH;
+      document.getElementById('progressFill').style.width = `${(curr / TOTAL_DEPTH) * 100}%`;
+    }
+
+    /* ========= 画面遷移 ========= */
+    function goNext(id) {
       document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      updateProgressLine(id);
     }
 
     function showResult(key) {
       const bean = beans[key];
       document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
       document.getElementById("beanName").textContent = bean.name;
+      // ★ 画像パスは「送信コードを参照」＝ ファイル名のみをそのまま使用
       document.getElementById("beanImage").src = bean.image;
       document.getElementById("beanDesc").textContent = bean.desc;
       document.getElementById("result").classList.add('active');
+      updateProgressLine('result'); // 最終到達で満タン
     }
 
     function restart() {
       document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
       document.getElementById("q1").classList.add('active');
+      updateProgressLine('q1');
     }
+
+    // 初期化
+    updateProgressLine('q1');
   </script>
 </body>
 </html>
