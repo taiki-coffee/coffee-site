@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TULLY'S COFFEE ビーンズ診断</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TULLY’S COFFEE ビーンズ診断</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 0;
       padding: 1em;
-      background-color: #000000; /* 黒背景 */
-      color: white;
+      background-color: #000; /* 黒背景 */
+      color: #333;
     }
 
     .container {
       max-width: 600px;
       margin: auto;
       padding: 1em;
-      background: #000000; /* 黒背景 */
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
       border-radius: 10px;
     }
 
     h1 {
       text-align: center;
-      font-size: 1.6em; /* 少し小さく */
       font-weight: bold;
+      font-size: 1.6em;
+      line-height: 1.3;
     }
 
-    .tullys {
+    h1 span.tullys {
       color: #e95c1b;
     }
-    .coffee {
+
+    h1 span.coffee {
       color: #f8c63c;
     }
-    .beans {
-      color: white;
+
+    h1 span.beans {
+      color: #fff;
+      background: none;
     }
 
     button {
@@ -73,33 +77,48 @@
       font-size: 1.5em;
       font-weight: 900;
       text-align: center;
+      background-color: #f0f0f0;
+      padding: 0.5em;
+      border-radius: 5px;
       margin: 1em 0 0.5em 0;
     }
 
     .footer {
       position: fixed;
-      bottom: 0;
       right: 0;
-      background-color: #e78ca4;
+      bottom: 0;
+      background-color: #e95caa; /* ピンク背景 */
       color: white;
+      font-size: 0.9em;
       padding: 0.5em 1em;
-      font-size: 1em; /* 少し大きく */
       border-top-left-radius: 10px;
+      z-index: 999;
     }
 
     @media screen and (max-width: 600px) {
       h1 {
-        font-size: 1.4em;
+        font-size: 1.3em;
       }
+
       button {
         font-size: 0.95em;
+      }
+
+      .footer {
+        font-size: 0.8em;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1><span class="tullys">TULLY'S</span> <span class="coffee">COFFEE</span> <span class="beans">ビーンズ診断</span></h1>
+    <h1>
+      <span class="tullys">TULLY’S</span><br>
+      <span class="coffee">COFFEE</span>
+      <span class="beans">ビーンズ診断</span>
+    </h1>
+
+    <!-- 質問フロー -->
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
       <button onclick="next('q2a')">すっきりとクリア</button>
@@ -107,7 +126,7 @@
       <button onclick="next('q2c')">どっしりとコクが深い</button>
     </div>
 
-    <!-- すっきりとクリア -->
+    <!-- すっきり -->
     <div id="q2a" class="question">
       <p>どっちのフルーティーが好き？</p>
       <button onclick="showResult('ethiopia')">ベリー系</button>
@@ -123,7 +142,7 @@
     <!-- バランス重視 -->
     <div id="q2b" class="question">
       <p>デザートに食べるなら？</p>
-      <button onclick="next('q3b')">チョコレートやキャラメル</button>
+      <button onclick="next('q3b')">チョコやキャラメル</button>
       <button onclick="next('q3c')">フルーツ</button>
     </div>
 
@@ -134,12 +153,12 @@
     </div>
 
     <div id="q3c" class="question">
-      <p>どちらの甘さを楽しみたい気分？</p>
+      <p>どちらの甘さ？</p>
       <button onclick="showResult('houseblend')">黒糖</button>
       <button onclick="showResult('fazenda')">ナッツ</button>
     </div>
 
-    <!-- どっしりとコクが深い -->
+    <!-- コク深い -->
     <div id="q2c" class="question">
       <p>今日はどちらになりたい気分？</p>
       <button onclick="showResult('cafemonale')">お嬢様</button>
@@ -147,67 +166,71 @@
     </div>
 
     <div id="q3d" class="question">
-      <p>どちらのコクを楽しみたい？</p>
-      <button onclick="showResult('french')">スモーキーで重厚なコク</button>
-      <button onclick="showResult('espresso')">ビターチョコのような甘味</button>
+      <p>どちらのコク？</p>
+      <button onclick="showResult('french')">スモーキー</button>
+      <button onclick="showResult('espresso')">ビターな甘味</button>
     </div>
 
+    <!-- 診断結果 -->
     <div id="result" class="result">
       <h2>あなたにおすすめの豆は…</h2>
       <div id="beanName" class="bean-name"></div>
       <img id="beanImage" src="" alt="おすすめ豆">
       <p id="beanDesc"></p>
+      <button onclick="restart()">はじめに戻る</button>
     </div>
   </div>
 
+  <!-- 右下の常時表示フッター -->
   <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
+  <!-- JavaScript -->
   <script>
     const beans = {
       espresso: {
         name: "エスプレッソクラシコ",
         image: "espresso.jpg",
-        desc: "力強い味とビターチョコのような甘みを併せ持つ、キレのある一杯。"
+        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
       },
       houseblend: {
         name: "ハウスブレンド",
         image: "house_blend.jpg",
-        desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンド。毎日飲みたくなる、やさしい味わいです。"
+        desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
       },
       mochajava: {
         name: "モカジャバ",
         image: "mocha_java.jpg",
-        desc: "やさしい酸味と香り高さが魅力。コーヒータイムに癒しを添える一杯。"
+        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
       },
       ethiopia: {
         name: "エチオピアモカ",
         image: "ethiopia_uraga.jpg",
-        desc: "華やかなベリーの香りと爽やかな酸味が特徴。軽やかで飲みやすいフルーティーな味わい。"
+        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
         image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさとコクのある甘み。おやつと一緒に楽しみたくなる味わい。"
+        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
       },
       laminita: {
         name: "コスタリカ ラミニータ",
         image: "laminita.jpg",
-        desc: "すっきりとした柑橘系の酸味が特徴。爽やかな口当たりで朝にもぴったり。"
+        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
       },
       cafemonale: {
         name: "カフェモナーレ",
         image: "cafe_monale.jpg",
-        desc: "まろやかな甘みとやさしいコクが特徴。気分はまるでお嬢様な一杯。"
+        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
       },
       french: {
         name: "フレンチロースト",
         image: "french_roast.jpg",
-        desc: "深煎りでスモーキーな香りとしっかりした苦味が魅力。ビター派に人気の力強い味わい。"
+        desc: "スモーキーで深いコク。力強く重厚な味わい。"
       },
       blackthree: {
         name: "ブラックスリー",
         image: "black_three.jpg",
-        desc: "とろっとした口当たりと香ばしさが絶妙なバランス。ブラックで楽しみたい方にぴったり。"
+        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
       }
     };
 
@@ -223,6 +246,11 @@
       document.getElementById("beanImage").src = bean.image;
       document.getElementById("beanDesc").textContent = bean.desc;
       document.getElementById("result").classList.add('active');
+    }
+
+    function restart() {
+      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
+      document.getElementById("q1").classList.add('active');
     }
   </script>
 </body>
