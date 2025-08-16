@@ -6,174 +6,80 @@
 <title>TULLY’S COFFEE ビーンズ診断</title>
 <style>
   :root{
-    --bg:#000;
-    --fg:#fff;
-    --muted:#cfcfcf;
-    --rail:#1b1b1b;
-    --rail-border:#262626;
-    --accent1:#e95c1b;   /* TULLY'S */
-    --accent2:#f8c63c;   /* COFFEE  */
+    --bg:#000; --fg:#fff; --muted:#cfcfcf;
+    --rail:#1b1b1b; --rail-border:#262626;
     --accentGrad: linear-gradient(90deg, #e95c1b 0%, #f8c63c 100%);
-    --card: rgba(255,255,255,0.06);
-    --card-border: rgba(255,255,255,0.10);
+    --card: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.10);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--fg);
     font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", Meiryo, Arial, sans-serif;
-    line-height:1.6;
+    line-height:1.6; padding:1em;
   }
+  .container{ max-width:600px; margin:auto; padding:1em; }
 
-  .wrap{
-    min-height:100%;
-    display:flex; flex-direction:column;
-  }
+  h1{ text-align:center; font-weight:900; font-size:1.6em; line-height:1.3; margin:0 0 .4em; }
+  h1 .tullys{ color:#e95c1b; }
+  h1 .coffee{ color:#f8c63c; }
+  h1 .beans { color:#fff; }
 
-  header{
-    padding:28px 18px 16px; text-align:center;
-  }
-  h1{
-    margin:0; font-weight:900; line-height:1.15;
-    font-size:clamp(28px,5.2vw,44px); letter-spacing:.01em;
-  }
-  .tullys{ color:#e95c1b; }
-  .coffee{ color:#f8c63c; }
-  .beans { color:#fff; }
-  .subtitle{
-    margin-top:8px; color:var(--muted); font-size:.98rem;
-  }
-
-  main{
-    flex:1;
-    max-width:760px; margin:0 auto; padding: 10px 18px 120px;
-    display:flex; flex-direction:column; gap:18px;
-  }
-
-  /* —— ネオ“数直線”プログレス —— */
-  .progressdeck{
-    display:grid; grid-template-columns: 64px 1fr 64px;
-    align-items:center; gap:14px;
-    margin-top:2px;
-  }
-  .pnum{
-    font-weight:900; font-feature-settings:"tnum"; text-align:center;
-    font-size:clamp(18px,3.5vw,22px);
-  }
+  /* 数直線（中央）＋ 左：現在 右：合計 */
+  .card{ background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:16px; backdrop-filter: blur(10px); }
+  .progressdeck{ display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:14px; margin:6px 0 18px; }
+  .pnum{ text-align:center; font-weight:900; font-feature-settings:"tnum"; font-size:clamp(18px,3.5vw,22px); }
   .pnum .sub{ display:block; color:#a8a8a8; font-weight:600; font-size:.74em; letter-spacing:.02em; margin-top:-2px; }
-  .pnum.now{ color:#fff }
-  .pnum.total{ color:#d7d7d7 }
+  .prail{ position:relative; height:12px; border-radius:999px; background:var(--rail); border:1px solid var(--rail-border); overflow:hidden; }
+  .pfiller{ position:absolute; inset:0 auto 0 0; width:0%; border-radius:999px; background:var(--accentGrad);
+            box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(233,92,27,.35);
+            transform-origin:left center; transition: width .35s cubic-bezier(.22,.61,.36,1); }
+  .knob{ position:absolute; top:50%; translate:-50% -50%; width:22px; height:22px; border-radius:50%; background:#fff;
+         mix-blend-mode:screen; opacity:.9; box-shadow:0 0 0 3px rgba(233,92,27,.25), 0 0 24px rgba(248,198,60,.45);
+         transition:left .35s cubic-bezier(.22,.61,.36,1); left:0%; }
 
-  .prail{
-    position:relative; height:12px; border-radius:999px;
-    background:var(--rail); border:1px solid var(--rail-border);
-    overflow:hidden;
+  /* 質問＆結果（あなたの流れを踏襲） */
+  button{
+    display:block; width:100%; margin:.5em 0; padding:1em; font-size:1em;
+    background-color:#6b4f3b; color:#fff; border:none; border-radius:12px;
+    transition: background-color .15s ease, transform .15s ease; cursor:pointer;
   }
-  .pfiller{
-    position:absolute; inset:0 auto 0 0;
-    width:0%; border-radius:999px;
-    background: var(--accentGrad);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(233,92,27,.35);
-    transform-origin:left center;
-    transition: width .35s cubic-bezier(.22,.61,.36,1);
-  }
-  .knob{
-    position:absolute; top:50%; translate: -50% -50%;
-    width:22px; height:22px; border-radius:50%;
-    background:#fff; mix-blend-mode:screen; opacity:.9;
-    box-shadow: 0 0 0 3px rgba(233,92,27,.25), 0 0 24px rgba(248,198,60,.45);
-    transition: left .35s cubic-bezier(.22,.61,.36,1);
-    left:0%;
-  }
+  button:hover{ background-color:#5a3f2b; transform:translateY(-1px) }
+  button:active{ transform:translateY(0) }
 
-  /* —— カード（グラス風） —— */
-  .card{
-    background:var(--card); border:1px solid var(--card-border);
-    backdrop-filter: blur(10px);
-    border-radius:20px; padding:22px;
-  }
+  img{ max-width:100%; height:auto; border-radius:10px; margin-top:1em; display:block; }
 
-  .question{ display:none }
-  .question.active{ display:block }
+  .question, .result{ display:none }
+  .active{ display:block }
 
-  .qtext{
-    font-weight:800; font-size:clamp(18px,2.8vw,22px); margin:4px 0 16px;
-  }
-
-  .opts{ display:grid; gap:12px }
-  .btn{
-    --hover: rgba(255,255,255,.06);
-    display:flex; align-items:center; gap:12px;
-    width:100%; padding:14px 16px; border-radius:14px;
-    border:1px solid var(--card-border);
-    background: rgba(255,255,255,.03);
-    color:var(--fg); cursor:pointer; font-size:1rem; font-weight:650;
-    transition: transform .1s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
-  }
-  .btn::before{
-    content:""; width:10px; height:10px; border-radius:50%;
-    background:var(--accentGrad);
-    box-shadow: 0 0 0 3px rgba(233,92,27,.18);
-  }
-  .btn:hover{
-    background:var(--hover); transform:translateY(-1px);
-    border-color:#3a3a3a; box-shadow: 0 6px 22px rgba(0,0,0,.35);
-  }
-  .btn:active{ transform:translateY(0) }
-
-  /* —— 結果 —— */
-  .result{ display:none }
-  .result.active{ display:block }
   .bean-name{
-    font-size:clamp(24px,4.6vw,32px); font-weight:1000; text-align:center;
-    background:linear-gradient(180deg,#fff,#cfcfcf);
-    color:#000; padding:.5em 0; border-radius:12px; margin: 8px 0 10px;
-  }
-  .desc{ color:var(--muted); margin:8px 4px 0; font-size:1.02rem }
-
-  .figure{
-    margin:8px 0 0;
-    border-radius:16px; overflow:hidden;
-    border:1px solid var(--card-border);
-    background:#0a0a0a;
-  }
-  .figure img{ width:100%; height:auto; display:block }
-
-  .actions{ margin-top:14px; display:flex; justify-content:center }
-  .ghost{
-    background:transparent; border:1px solid #3a3a3a; color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer;
-    transition: .15s ease; font-weight:700;
-  }
-  .ghost:hover{ background:#151515; transform:translateY(-1px) }
-  .ghost:active{ transform:translateY(0) }
-
-  footer{
-    position:fixed; right:10px; bottom:10px;
-    background:#FF6FAE; color:#fff; padding:6px 10px; border-radius:10px;
-    font-weight:800; font-size:clamp(12px,2vw,14px); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    font-size:1.5em; font-weight:900; text-align:center; background:#333; padding:.5em; border-radius:10px; margin:1em 0 .5em;
   }
 
-  /* 小さめ画面最適化 */
-  @media (max-width:520px){
-    .progressdeck{ grid-template-columns: 52px 1fr 52px; gap:10px }
+  .footer{
+    position:fixed; right:0; bottom:0; background-color:#e95caa; color:#fff;
+    font-size:.9em; padding:.5em 1em; border-top-left-radius:10px; z-index:999;
+  }
+
+  @media (max-width:600px){
+    h1{ font-size:1.3em }
+    button{ font-size:.95em }
+    .footer{ font-size:.8em }
+    .progressdeck{ grid-template-columns:52px 1fr 52px; gap:10px }
     .prail{ height:10px }
     .knob{ width:18px; height:18px }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+  <div class="container">
     <h1>
       <span class="tullys">TULLY’S</span> <span class="coffee">COFFEE</span><br>
       <span class="beans">ビーンズ診断</span>
     </h1>
-    <div class="subtitle">好みを選ぶだけ。最適な1杯をおすすめします。</div>
-  </header>
 
-  <main>
-    <!-- Progress (中央:数直線 / 左:現在 右:合計) -->
-    <section class="card">
+    <!-- 数直線（中央）、左：現在 右：合計 -->
+    <div class="card" style="padding:14px 16px;">
       <div class="progressdeck" aria-label="診断の進行状況">
         <div class="pnum now"><span id="currIdx">1</span><span class="sub">現在</span></div>
         <div class="prail" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1">
@@ -182,153 +88,165 @@
         </div>
         <div class="pnum total"><span id="totalCount">3</span><span class="sub">合計</span></div>
       </div>
-    </section>
+    </div>
 
-    <!-- Q1 -->
-    <section id="q1" class="card question active">
-      <div class="qtext">どんな味わいのコーヒーが好き？</div>
-      <div class="opts">
-        <button class="btn" onclick="goNext('q2a')">すっきりとクリア</button>
-        <button class="btn" onclick="goNext('q2b')">バランス重視</button>
-        <button class="btn" onclick="goNext('q2c')">どっしりとコクが深い</button>
-      </div>
-    </section>
+    <!-- 質問フロー（あなたのコードそのまま） -->
+    <div id="q1" class="question active">
+      <p>どんな味わいのコーヒーが好き？</p>
+      <button onclick="goNext('q2a')">すっきりとクリア</button>
+      <button onclick="goNext('q2b')">バランス重視</button>
+      <button onclick="goNext('q2c')">どっしりとコクが深い</button>
+    </div>
 
     <!-- すっきり -->
-    <section id="q2a" class="card question">
-      <div class="qtext">どっちのフルーティーが好き？</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('ethiopia')">ベリー系</button>
-        <button class="btn" onclick="goNext('q3a')">柑橘系</button>
-      </div>
-    </section>
+    <div id="q2a" class="question">
+      <p>どっちのフルーティーが好き？</p>
+      <button onclick="showResult('ethiopia')">ベリー系</button>
+      <button onclick="goNext('q3a')">柑橘系</button>
+    </div>
 
-    <section id="q3a" class="card question">
-      <div class="qtext">フルーティーの中に…</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('mochajava')">少しコクが欲しい</button>
-        <button class="btn" onclick="showResult('laminita')">すっきりさわやか</button>
-      </div>
-    </section>
+    <div id="q3a" class="question">
+      <p>フルーティーの中に…</p>
+      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
+      <button onclick="showResult('laminita')">すっきりさわやか</button>
+    </div>
 
     <!-- バランス重視 -->
-    <section id="q2b" class="card question">
-      <div class="qtext">デザートに食べるなら？</div>
-      <div class="opts">
-        <button class="btn" onclick="goNext('q3b')">チョコやキャラメル</button>
-        <button class="btn" onclick="goNext('q3c')">フルーツ</button>
-      </div>
-    </section>
+    <div id="q2b" class="question">
+      <p>デザートに食べるなら？</p>
+      <button onclick="goNext('q3b')">チョコやキャラメル</button>
+      <button onclick="goNext('q3c')">フルーツ</button>
+    </div>
 
-    <section id="q3b" class="card question">
-      <div class="qtext">コーヒータイムの癒しといえば？</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('mochajava')">香りを楽しむ</button>
-        <button class="btn" onclick="showResult('blackthree')">とろっとした口当たり</button>
-      </div>
-    </section>
+    <div id="q3b" class="question">
+      <p>コーヒータイムの癒しといえば？</p>
+      <button onclick="showResult('mochajava')">香りを楽しむ</button>
+      <button onclick="showResult('blackthree')">とろっとした口当たり</button>
+    </div>
 
-    <section id="q3c" class="card question">
-      <div class="qtext">どちらの甘さ？</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('houseblend')">黒糖</button>
-        <button class="btn" onclick="showResult('fazenda')">ナッツ</button>
-      </div>
-    </section>
+    <div id="q3c" class="question">
+      <p>どちらの甘さ？</p>
+      <button onclick="showResult('houseblend')">黒糖</button>
+      <button onclick="showResult('fazenda')">ナッツ</button>
+    </div>
 
     <!-- コク深い -->
-    <section id="q2c" class="card question">
-      <div class="qtext">今日はどちらになりたい気分？</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('cafemonale')">お嬢様</button>
-        <button class="btn" onclick="goNext('q3d')">紳士</button>
-      </div>
-    </section>
+    <div id="q2c" class="question">
+      <p>今日はどちらになりたい気分？</p>
+      <button onclick="showResult('cafemonale')">お嬢様</button>
+      <button onclick="goNext('q3d')">紳士</button>
+    </div>
 
-    <section id="q3d" class="card question">
-      <div class="qtext">どちらのコク？</div>
-      <div class="opts">
-        <button class="btn" onclick="showResult('french')">スモーキー</button>
-        <button class="btn" onclick="showResult('espresso')">ビターな甘味</button>
-      </div>
-    </section>
+    <div id="q3d" class="question">
+      <p>どちらのコク？</p>
+      <button onclick="showResult('french')">スモーキー</button>
+      <button onclick="showResult('espresso')">ビターな甘味</button>
+    </div>
 
-    <!-- 結果 -->
-    <section id="result" class="card result">
-      <h2 style="margin:0 0 6px; font-size:1.1rem; font-weight:800; color:#ddd;">あなたにぴったりの豆は…</h2>
+    <!-- 診断結果（あなたの構成を踏襲） -->
+    <div id="result" class="result">
+      <h2>あなたにぴったりの豆は…</h2>
       <div id="beanName" class="bean-name"></div>
-      <figure class="figure"><img id="beanImage" alt="おすすめ豆"></figure>
-      <p id="beanDesc" class="desc"></p>
-      <div class="actions">
-        <button class="ghost" onclick="restart()">はじめから</button>
-      </div>
-    </section>
-  </main>
+      <img id="beanImage" src="" alt="おすすめ豆">
+      <p id="beanDesc"></p>
+      <button onclick="restart()">はじめに戻る</button>
+    </div>
+  </div>
 
-  <footer>タリーズコーヒー　イオンモール筑紫野</footer>
-</div>
+  <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
-<script>
-  /* 画像と文言（あなたの指定どおり、src は“ファイル名のみ”） */
-  const beans = {
-    espresso:    { name: "エスプレッソクラシコ",    image: "espresso.jpg",        desc: "力強い味とビターチョコのような甘みを併せ持つ。" },
-    houseblend:  { name: "ハウスブレンド",          image: "house_blend.jpg",      desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。" },
-    mochajava:   { name: "モカジャバ",              image: "mocha_java.jpg",       desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。" },
-    ethiopia:    { name: "エチオピアモカ",          image: "ethiopia_uraga.jpg",   desc: "華やかなベリーの香りと爽やかな酸味が特徴。" },
-    fazenda:     { name: "ブラジル ファゼンダ",     image: "fazenda.jpg",          desc: "ナッツのような香ばしさと甘みが調和した味わい。" },
-    laminita:    { name: "コスタリカ ラミニータ",   image: "laminita.jpg",         desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。" },
-    cafemonale:  { name: "カフェモナーレ",          image: "cafe_monale.jpg",      desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。" },
-    french:      { name: "フレンチロースト",        image: "french_roast.jpg",     desc: "スモーキーで深いコク。力強く重厚な味わい。" },
-    blackthree:  { name: "ブラックスリー",          image: "black_three.jpg",      desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。" }
-  };
+  <script>
+    /* 画像＆文言：送信いただいた定義をそのまま使用（srcはファイル名のみ） */
+    const beans = {
+      espresso: {
+        name: "エスプレッソクラシコ",
+        image: "espresso.jpg",
+        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
+      },
+      houseblend: {
+        name: "ハウスブレンド",
+        image: "house_blend.jpg",
+        desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
+      },
+      mochajava: {
+        name: "モカジャバ",
+        image: "mocha_java.jpg",
+        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
+      },
+      ethiopia: {
+        name: "エチオピアモカ",
+        image: "ethiopia_uraga.jpg",
+        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
+      },
+      fazenda: {
+        name: "ブラジル ファゼンダ",
+        image: "fazenda.jpg",
+        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
+      },
+      laminita: {
+        name: "コスタリカ ラミニータ",
+        image: "laminita.jpg",
+        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
+      },
+      cafemonale: {
+        name: "カフェモナーレ",
+        image: "cafe_monale.jpg",
+        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
+      },
+      french: {
+        name: "フレンチロースト",
+        image: "french_roast.jpg",
+        desc: "スモーキーで深いコク。力強く重厚な味わい。"
+      },
+      blackthree: {
+        name: "ブラックスリー",
+        image: "black_three.jpg",
+        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
+      }
+    };
 
-  /* 分岐深度で進捗を管理（最大3問） */
-  const DEPTH_MAP = { q1:1, q2a:2, q2b:2, q2c:2, q3a:3, q3b:3, q3c:3, q3d:3, result:3 };
-  const TOTAL_DEPTH = 3;
+    /* 進捗：分岐でも使える“深さ”ベース（最大3問） */
+    const DEPTH_MAP = { q1:1, q2a:2, q2b:2, q2c:2, q3a:3, q3b:3, q3c:3, q3d:3, result:3 };
+    const TOTAL_DEPTH = 3;
 
-  /* 進行UI更新 */
-  function updateProgress(whereId){
-    const now = Math.min(DEPTH_MAP[whereId] || 1, TOTAL_DEPTH);
-    document.getElementById('currIdx').textContent = now;
-    document.getElementById('totalCount').textContent = TOTAL_DEPTH;
+    function updateProgress(activeId){
+      const now = Math.min(DEPTH_MAP[activeId] || 1, TOTAL_DEPTH);
+      document.getElementById('currIdx').textContent = now;
+      document.getElementById('totalCount').textContent = TOTAL_DEPTH;
+      const pct = (now / TOTAL_DEPTH) * 100;
+      document.getElementById('pfiller').style.width = pct + '%';
+      document.getElementById('knob').style.left = pct + '%';
+      document.querySelector('.prail').setAttribute('aria-valuenow', String(now));
+    }
 
-    const pct = (now / TOTAL_DEPTH) * 100;
-    const filler = document.getElementById('pfiller');
-    const knob = document.getElementById('knob');
-    filler.style.width = pct + '%';
-    knob.style.left = pct + '%';
+    /* ナビゲーション（あなたの構造そのまま） */
+    function goNext(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      updateProgress(id);
+    }
 
-    const rail = document.querySelector('.prail');
-    rail.setAttribute('aria-valuenow', String(now));
-  }
+    function showResult(key) {
+      const bean = beans[key];
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById("beanName").textContent = bean.name;
+      document.getElementById("beanImage").src = bean.image; // ファイル名のみ
+      document.getElementById("beanDesc").textContent = bean.desc;
+      document.getElementById("result").classList.add('active');
+      updateProgress('result');
+      // スクロール位置調整（モバイル配慮）
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
 
-  /* 画面遷移 */
-  function goNext(id){
-    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    updateProgress(id);
-  }
+    function restart() {
+      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
+      document.getElementById("q1").classList.add('active');
+      updateProgress('q1');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
 
-  function showResult(key){
-    const bean = beans[key];
-    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
-    document.getElementById('beanName').textContent = bean.name;
-    document.getElementById('beanImage').src = bean.image; // ファイル名のみ
-    document.getElementById('beanDesc').textContent = bean.desc;
-    document.getElementById('result').classList.add('active');
-    updateProgress('result');
-  }
-
-  function restart(){
-    document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
-    document.getElementById('q1').classList.add('active');
+    // 初期化
     updateProgress('q1');
-    // スクロール戻し（モバイル配慮）
-    window.scrollTo({top:0, behavior:'smooth'});
-  }
-
-  // 初期化
-  updateProgress('q1');
-</script>
+  </script>
 </body>
 </html>
