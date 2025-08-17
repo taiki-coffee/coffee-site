@@ -25,11 +25,9 @@
   h1 .coffee{ color:#f8c63c; }
   h1 .beans { color:#fff; }
 
-  /* 進捗 */
+  /* 進捗（数直線のみ） */
   .card{ background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:16px; backdrop-filter: blur(10px); }
-  .progressdeck{ display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:14px; margin:6px 0 18px; }
-  .pnum{ text-align:center; font-weight:900; font-feature-settings:"tnum"; font-size:clamp(18px,3.5vw,22px); }
-  .pnum .sub{ display:block; color:#a8a8a8; font-weight:600; font-size:.74em; letter-spacing:.02em; margin-top:-2px; }
+  .progressdeck{ display:block; margin:6px 0 18px; }
   .prail{ position:relative; height:12px; border-radius:999px; background:var(--rail); border:1px solid var(--rail-border); overflow:hidden; }
   .pfiller{ position:absolute; inset:0 auto 0 0; width:0%; border-radius:999px; background:var(--accentGrad);
             box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(233,92,27,.35);
@@ -65,7 +63,6 @@
     h1{ font-size:1.3em }
     button{ font-size:.95em }
     .footer{ font-size:.8em }
-    .progressdeck{ grid-template-columns:52px 1fr 52px; gap:10px }
     .prail{ height:10px }
     .knob{ width:18px; height:18px }
   }
@@ -78,21 +75,19 @@
       <span class="beans">ビーンズ診断</span>
     </h1>
 
-    <!-- 進捗：左 現在 / 中央バー / 右 合計（ルートで可変） -->
+    <!-- 進捗：数直線のみ（数字・文字なし） -->
     <div class="card" style="padding:14px 16px;">
       <div class="progressdeck" aria-label="診断の進行状況">
-        <div class="pnum now"><span id="currIdx">1</span><span class="sub">現在</span></div>
-        <div class="prail" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1">
+        <div class="prail" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" aria-label="進捗バーのみ">
           <div id="pfiller" class="pfiller"></div>
           <div id="knob" class="knob" aria-hidden="true"></div>
         </div>
-        <div class="pnum total"><span id="totalCount">3</span><span class="sub">合計</span></div>
       </div>
     </div>
 
     <!-- ====== フローチャート（分岐型・可変ステップ対応） ====== -->
 
-    <!-- Q1：最初の分岐（全ルート共通：ステップ1） -->
+    <!-- Q1：最初の分岐（共通：ステップ1） -->
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
       <button onclick="goNext('q2a')">すっきり・爽やか</button>
@@ -114,7 +109,7 @@
       <button onclick="goNext('q4a')">やさしさ・朝に合う</button>
     </div>
 
-    <!-- Q4a：最終分岐（選び直しがあってもOKな文言に） -->
+    <!-- Q4a：最終分岐 -->
     <div id="q4a" class="question">
       <p>飲むシーンに合わせると？</p>
       <button onclick="showResult('laminita')">食事と爽やかに</button>
@@ -219,34 +214,27 @@
       }
     };
 
-    /* 進捗（可変対応）：現在ステップと、そのルートの合計ステップ */
+    /* 進捗（可変対応）：数直線のみ表示。内部的にはステップ計算 */
     let currentStep = 1;
-    let currentTotal = 3; // 初期表示は3（選択で動的に更新）
+    let currentTotal = 3; // 初期は3（分岐で動的に変わる）
 
-    // 各ノードに入った時点での想定合計ステップ
-    // - すっきり（q2a→q3a→q4a→result）は4
-    // - バランス（q2b→result）は3
-    // - ビター（q2c→q3→result）は3
+    // 各ノードでの合計ステップ推定
     const TOTAL_BY_NODE = {
-      q1: 3,      // 初期値（分岐後に上書き）
+      q1: 3,      // 初期（分岐後に上書き）
       q2a: 4, q3a: 4, q4a: 4,
       q2b: 3,
       q2c: 3, q3c: 3, q3d: 3,
-      result: null // 結果時は現状のcurrentTotalを維持
+      result: null
     };
 
     function setTotalForNode(nodeId){
       const t = TOTAL_BY_NODE[nodeId];
-      if (typeof t === 'number') {
-        currentTotal = t;
-      }
-      document.getElementById('totalCount').textContent = currentTotal;
+      if (typeof t === 'number') currentTotal = t;
       const pr = document.querySelector('.prail');
       pr.setAttribute('aria-valuemax', String(currentTotal));
     }
 
     function updateProgress(){
-      document.getElementById('currIdx').textContent = currentStep;
       const pct = Math.max(0, Math.min(100, (currentStep / currentTotal) * 100));
       document.getElementById('pfiller').style.width = pct + '%';
       document.getElementById('knob').style.left = pct + '%';
@@ -269,10 +257,10 @@
 
     function showResult(key) {
       const bean = beans[key];
-      currentStep += 1; // 結果に到達＝1手前進
-      setTotalForNode('result'); // total は現行保持
+      currentStep += 1; // 結果へ
+      setTotalForNode('result'); // total は現行維持
       document.getElementById("beanName").textContent = bean.name;
-      document.getElementById("beanImage").src = bean.image; // ファイル名のみ
+      document.getElementById("beanImage").src = bean.image;
       document.getElementById("beanDesc").textContent = bean.desc;
       showOnly("result");
       updateProgress();
