@@ -25,7 +25,7 @@
   h1 .coffee{ color:#f8c63c; }
   h1 .beans { color:#fff; }
 
-  /* 数直線（中央）＋ 左：現在 右：合計 */
+  /* 進捗 */
   .card{ background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:16px; backdrop-filter: blur(10px); }
   .progressdeck{ display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:14px; margin:6px 0 18px; }
   .pnum{ text-align:center; font-weight:900; font-feature-settings:"tnum"; font-size:clamp(18px,3.5vw,22px); }
@@ -38,7 +38,7 @@
          mix-blend-mode:screen; opacity:.9; box-shadow:0 0 0 3px rgba(233,92,27,.25), 0 0 24px rgba(248,198,60,.45);
          transition:left .35s cubic-bezier(.22,.61,.36,1); left:0%; }
 
-  /* 質問＆結果（あなたの流れを踏襲） */
+  /* QA & Result */
   button{
     display:block; width:100%; margin:.5em 0; padding:1em; font-size:1em;
     background-color:#6b4f3b; color:#fff; border:none; border-radius:12px;
@@ -78,7 +78,7 @@
       <span class="beans">ビーンズ診断</span>
     </h1>
 
-    <!-- 数直線（中央）、左：現在 右：合計 -->
+    <!-- 進捗：左 現在 / 中央バー / 右 合計（ルートで可変） -->
     <div class="card" style="padding:14px 16px;">
       <div class="progressdeck" aria-label="診断の進行状況">
         <div class="pnum now"><span id="currIdx">1</span><span class="sub">現在</span></div>
@@ -90,60 +90,69 @@
       </div>
     </div>
 
-    <!-- 質問フロー（あなたのコードそのまま） -->
+    <!-- ====== フローチャート（分岐型・可変ステップ対応） ====== -->
+
+    <!-- Q1：最初の分岐（全ルート共通：ステップ1） -->
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
-      <button onclick="goNext('q2a')">すっきりとクリア</button>
-      <button onclick="goNext('q2b')">バランス重視</button>
-      <button onclick="goNext('q2c')">どっしりとコクが深い</button>
+      <button onclick="goNext('q2a')">すっきり・爽やか</button>
+      <button onclick="goNext('q2b')">香ばしくバランス良く</button>
+      <button onclick="goNext('q2c')">コク深くビター</button>
     </div>
 
-    <!-- すっきり -->
+    <!-- Q2a：すっきり派（このルートは最大4問） -->
     <div id="q2a" class="question">
-      <p>どっちのフルーティーが好き？</p>
-      <button onclick="showResult('ethiopia')">ベリー系</button>
-      <button onclick="goNext('q3a')">柑橘系</button>
+      <p>香りのタイプはどっち？</p>
+      <button onclick="showResult('ethiopia')">ベリーのように華やか</button>
+      <button onclick="goNext('q3a')">柑橘・花のように爽やか</button>
     </div>
 
+    <!-- Q3a：すっきり×柑橘・花（更に絞る：Q4aへ） -->
     <div id="q3a" class="question">
-      <p>フルーティーの中に…</p>
-      <button onclick="showResult('mochajava')">少しコクが欲しい</button>
-      <button onclick="showResult('laminita')">すっきりさわやか</button>
+      <p>爽やか系の中で、どちらが近い？</p>
+      <button onclick="goNext('q4a')">キレの良さ・クリア感</button>
+      <button onclick="goNext('q4a')">やさしさ・朝に合う</button>
     </div>
 
-    <!-- バランス重視 -->
+    <!-- Q4a：最終分岐（選び直しがあってもOKな文言に） -->
+    <div id="q4a" class="question">
+      <p>飲むシーンに合わせると？</p>
+      <button onclick="showResult('laminita')">食事と爽やかに（コスタリカ ラミニータ）</button>
+      <button onclick="showResult('piccolo')">朝に軽やかに（ピッコロバンビーノ）</button>
+      <button onclick="showResult('mochajava')">香りを少し強調したい（モカジャバ）</button>
+    </div>
+
+    <!-- Q2b：バランス派（このルートは3問） -->
     <div id="q2b" class="question">
-      <p>デザートに食べるなら？</p>
-      <button onclick="goNext('q3b')">チョコやキャラメル</button>
-      <button onclick="goNext('q3c')">フルーツ</button>
+      <p>甘さ・口当たりのイメージは？</p>
+      <button onclick="showResult('houseblend')">黒糖のようなまろやかさ</button>
+      <button onclick="showResult('fazenda')">ナッツの香ばしさ</button>
+      <button onclick="showResult('blackthree')">とろっと濃厚な口当たり</button>
+      <button onclick="showResult('mochajava')">香りをしっかり楽しみたい</button>
     </div>
 
-    <div id="q3b" class="question">
-      <p>コーヒータイムの癒しといえば？</p>
-      <button onclick="showResult('mochajava')">香りを楽しむ</button>
-      <button onclick="showResult('blackthree')">とろっとした口当たり</button>
-    </div>
-
-    <div id="q3c" class="question">
-      <p>どちらの甘さ？</p>
-      <button onclick="showResult('houseblend')">黒糖</button>
-      <button onclick="showResult('fazenda')">ナッツ</button>
-    </div>
-
-    <!-- コク深い -->
+    <!-- Q2c：ビター派（このルートは3問） -->
     <div id="q2c" class="question">
-      <p>今日はどちらになりたい気分？</p>
-      <button onclick="showResult('cafemonale')">お嬢様</button>
-      <button onclick="goNext('q3d')">紳士</button>
+      <p>飲み方はどちらが多い？</p>
+      <button onclick="goNext('q3d')">ブラックで楽しむ</button>
+      <button onclick="goNext('q3c')">ミルクと合わせる</button>
     </div>
 
+    <!-- Q3c：ビター×ミルク -->
+    <div id="q3c" class="question">
+      <p>ミルクと合わせるなら？</p>
+      <button onclick="showResult('espresso')">濃厚ビターをしっかり（エスプレッソクラシコ）</button>
+      <button onclick="showResult('cafemonale')">まろやかでやさしく（カフェモナーレ）</button>
+    </div>
+
+    <!-- Q3d：ビター×ブラック -->
     <div id="q3d" class="question">
-      <p>どちらのコク？</p>
-      <button onclick="showResult('french')">スモーキー</button>
-      <button onclick="showResult('espresso')">ビターな甘味</button>
+      <p>ブラックの好みは？</p>
+      <button onclick="showResult('french')">スモーキーで力強く（フレンチロースト）</button>
+      <button onclick="showResult('blackthree')">香ばしい甘みとコク（ブラックスリー）</button>
     </div>
 
-    <!-- 診断結果（あなたの構成を踏襲） -->
+    <!-- 診断結果 -->
     <div id="result" class="result">
       <h2>あなたにぴったりの豆は…</h2>
       <div id="beanName" class="bean-name"></div>
@@ -156,7 +165,7 @@
   <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
   <script>
-    /* 画像＆文言：送信いただいた定義をそのまま使用（srcはファイル名のみ） */
+    /* 画像＆文言（ファイル名はそのまま使う想定） */
     const beans = {
       espresso: {
         name: "エスプレッソクラシコ",
@@ -171,82 +180,115 @@
       mochajava: {
         name: "モカジャバ",
         image: "mocha_java.jpg",
-        desc: "やさしい酸味と香り高さ。癒しの一杯にぴったり。"
+        desc: "華やかなアロマとやさしい酸味。リラックスタイムにぴったり。"
       },
       ethiopia: {
         name: "エチオピアモカ",
         image: "ethiopia_uraga.jpg",
-        desc: "華やかなベリーの香りと爽やかな酸味が特徴。"
+        desc: "ベリーのように華やかな香りと爽やかな酸味。"
       },
       fazenda: {
         name: "ブラジル ファゼンダ",
         image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさと甘みが調和した味わい。"
+        desc: "ナッツのような香ばしさとコクのある甘み。"
       },
       laminita: {
         name: "コスタリカ ラミニータ",
         image: "laminita.jpg",
-        desc: "すっきりとした柑橘系の酸味が特徴の爽やかな一杯。"
+        desc: "柑橘系の爽やかな酸味とクリアな後味。"
       },
       cafemonale: {
         name: "カフェモナーレ",
         image: "cafe_monale.jpg",
-        desc: "まろやかな甘みとやさしいコクで、気分はお嬢様。"
+        desc: "ミルクに合うまろやかな甘みとやさしいコク。"
       },
       french: {
         name: "フレンチロースト",
         image: "french_roast.jpg",
-        desc: "スモーキーで深いコク。力強く重厚な味わい。"
+        desc: "スモーキーで深いコク。力強いビターの余韻。"
       },
       blackthree: {
         name: "ブラックスリー",
         image: "black_three.jpg",
-        desc: "とろっとした口当たりと香ばしさが魅力の濃厚ブレンド。"
+        desc: "とろっとした口当たり、香ばしさと甘みのバランス。"
+      },
+      piccolo: {
+        name: "ピッコロバンビーノ",
+        image: "piccolo_bambino.jpg",
+        desc: "軽やかでマイルド。キャラメルのような香ばしさ。朝にぴったり。"
       }
     };
 
-    /* 進捗：分岐でも使える“深さ”ベース（最大3問） */
-    const DEPTH_MAP = { q1:1, q2a:2, q2b:2, q2c:2, q3a:3, q3b:3, q3c:3, q3d:3, result:3 };
-    const TOTAL_DEPTH = 3;
+    /* 進捗（可変対応）：現在ステップと、そのルートの合計ステップ */
+    let currentStep = 1;
+    let currentTotal = 3; // 初期表示は3（選択で動的に更新）
 
-    function updateProgress(activeId){
-      const now = Math.min(DEPTH_MAP[activeId] || 1, TOTAL_DEPTH);
-      document.getElementById('currIdx').textContent = now;
-      document.getElementById('totalCount').textContent = TOTAL_DEPTH;
-      const pct = (now / TOTAL_DEPTH) * 100;
-      document.getElementById('pfiller').style.width = pct + '%';
-      document.getElementById('knob').style.left = pct + '%';
-      document.querySelector('.prail').setAttribute('aria-valuenow', String(now));
+    // 各ノードに入った時点での想定合計ステップ
+    // - すっきり（q2a→q3a→q4a→result）は4
+    // - バランス（q2b→result）は3
+    // - ビター（q2c→q3→result）は3
+    const TOTAL_BY_NODE = {
+      q1: 3,      // 初期値（分岐後に上書き）
+      q2a: 4, q3a: 4, q4a: 4,
+      q2b: 3,
+      q2c: 3, q3c: 3, q3d: 3,
+      result: null // 結果時は現状のcurrentTotalを維持
+    };
+
+    function setTotalForNode(nodeId){
+      const t = TOTAL_BY_NODE[nodeId];
+      if (typeof t === 'number') {
+        currentTotal = t;
+      }
+      document.getElementById('totalCount').textContent = currentTotal;
+      const pr = document.querySelector('.prail');
+      pr.setAttribute('aria-valuemax', String(currentTotal));
     }
 
-    /* ナビゲーション（あなたの構造そのまま） */
-    function goNext(id) {
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+    function updateProgress(){
+      document.getElementById('currIdx').textContent = currentStep;
+      const pct = Math.max(0, Math.min(100, (currentStep / currentTotal) * 100));
+      document.getElementById('pfiller').style.width = pct + '%';
+      document.getElementById('knob').style.left = pct + '%';
+      const pr = document.querySelector('.prail');
+      pr.setAttribute('aria-valuenow', String(currentStep));
+    }
+
+    function showOnly(id){
+      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      updateProgress(id);
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function goNext(id) {
+      currentStep += 1;
+      setTotalForNode(id);
+      showOnly(id);
+      updateProgress();
     }
 
     function showResult(key) {
       const bean = beans[key];
-      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      currentStep += 1; // 結果に到達＝1手前進
+      setTotalForNode('result'); // total は現行保持
       document.getElementById("beanName").textContent = bean.name;
       document.getElementById("beanImage").src = bean.image; // ファイル名のみ
       document.getElementById("beanDesc").textContent = bean.desc;
-      document.getElementById("result").classList.add('active');
-      updateProgress('result');
-      // スクロール位置調整（モバイル配慮）
-      window.scrollTo({top:0, behavior:'smooth'});
+      showOnly("result");
+      updateProgress();
     }
 
     function restart() {
-      document.querySelectorAll('.question, .result').forEach(el => el.classList.remove('active'));
-      document.getElementById("q1").classList.add('active');
-      updateProgress('q1');
-      window.scrollTo({top:0, behavior:'smooth'});
+      currentStep = 1;
+      currentTotal = 3;
+      setTotalForNode('q1');
+      showOnly("q1");
+      updateProgress();
     }
 
     // 初期化
-    updateProgress('q1');
+    setTotalForNode('q1');
+    updateProgress();
   </script>
 </body>
 </html>
