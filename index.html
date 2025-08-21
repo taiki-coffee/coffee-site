@@ -75,7 +75,7 @@
       <span class="beans">ビーンズ診断</span>
     </h1>
 
-    <!-- 進捗：数直線のみ（数字・文字なし） -->
+    <!-- 進捗：数直線のみ -->
     <div class="card" style="padding:14px 16px;">
       <div class="progressdeck" aria-label="診断の進行状況">
         <div class="prail" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" aria-label="進捗バーのみ">
@@ -85,9 +85,9 @@
       </div>
     </div>
 
-    <!-- ====== フローチャート（分岐型・可変ステップ対応） ====== -->
+    <!-- ====== フローチャート ====== -->
 
-    <!-- Q1：最初の分岐（共通：ステップ1） -->
+    <!-- Q1 -->
     <div id="q1" class="question active">
       <p>どんな味わいのコーヒーが好き？</p>
       <button onclick="goNext('q2a')">すっきり・爽やか</button>
@@ -95,21 +95,21 @@
       <button onclick="goNext('q2c')">コク深くビター</button>
     </div>
 
-    <!-- Q2a：すっきり派（このルートは最大4問） -->
+    <!-- Q2a：すっきり派 -->
     <div id="q2a" class="question">
       <p>香りのタイプはどっち？</p>
       <button onclick="showResult('ethiopia')">ベリーのように華やか</button>
       <button onclick="goNext('q3a')">柑橘・花のように爽やか</button>
     </div>
 
-    <!-- Q3a：すっきり×柑橘・花（更に絞る：Q4aへ） -->
+    <!-- Q3a：すっきり×柑橘・花 -->
     <div id="q3a" class="question">
       <p>爽やか系の中で、どちらが近い？</p>
       <button onclick="goNext('q4a')">キレの良さ・クリア感</button>
       <button onclick="goNext('q4a')">やさしさ・朝に合う</button>
     </div>
 
-    <!-- Q4a：最終分岐 -->
+    <!-- Q4a：最終 -->
     <div id="q4a" class="question">
       <p>飲むシーンに合わせると？</p>
       <button onclick="showResult('laminita')">食事と爽やかに</button>
@@ -117,7 +117,7 @@
       <button onclick="showResult('mochajava')">香りを少し強調したい</button>
     </div>
 
-    <!-- Q2b：バランス派（このルートは3問） -->
+    <!-- Q2b：バランス派 -->
     <div id="q2b" class="question">
       <p>甘さ・口当たりのイメージは？</p>
       <button onclick="showResult('houseblend')">黒糖のようなまろやかさ</button>
@@ -126,7 +126,7 @@
       <button onclick="showResult('mochajava')">香りをしっかり楽しみたい</button>
     </div>
 
-    <!-- Q2c：ビター派（このルートは3問） -->
+    <!-- Q2c：ビター派 -->
     <div id="q2c" class="question">
       <p>飲み方はどちらが多い？</p>
       <button onclick="goNext('q3d')">ブラックで楽しむ</button>
@@ -160,86 +160,35 @@
   <div class="footer">タリーズコーヒー　イオンモール筑紫野</div>
 
   <script>
-    /* 画像＆文言（ファイル名はそのまま使う想定） */
+    /* 画像と説明（ファイル名はスクショと一致済み） */
     const beans = {
-      espresso: {
-        name: "エスプレッソクラシコ",
-        image: "espresso.jpg",
-        desc: "力強い味とビターチョコのような甘みを併せ持つ。"
-      },
-      houseblend: {
-        name: "ハウスブレンド",
-        image: "house_blend.jpg",
-        desc: "ほどよい酸味とまろやかなコクが楽しめる、バランスの良い定番ブレンドです。毎日飲みたくなる、やさしい味わいです。"
-      },
-      mochajava: {
-        name: "モカジャバ",
-        image: "mocha_java.jpg",
-        desc: "華やかなアロマとやさしい酸味。リラックスタイムにぴったり。"
-      },
-      ethiopia: {
-        name: "エチオピアモカ",
-        image: "ethiopia_uraga.jpg",
-        desc: "ベリーのように華やかな香りと爽やかな酸味。"
-      },
-      fazenda: {
-        name: "ブラジル ファゼンダ",
-        image: "fazenda.jpg",
-        desc: "ナッツのような香ばしさとコクのある甘み。"
-      },
-      laminita: {
-        name: "コスタリカ ラミニータ",
-        image: "laminita.jpg",
-        desc: "柑橘系の爽やかな酸味とクリアな後味。"
-      },
-      cafemonale: {
-        name: "カフェモナーレ",
-        image: "cafe_monale.jpg",
-        desc: "ミルクに合うまろやかな甘みとやさしいコク。"
-      },
-      french: {
-        name: "フレンチロースト",
-        image: "french_roast.jpg",
-        desc: "スモーキーで深いコク。力強いビターの余韻。"
-      },
-      blackthree: {
-        name: "ブラックスリー",
-        image: "black_three.jpg",
-        desc: "とろっとした口当たり、香ばしさと甘みのバランス。"
-      },
-      piccolo: {
-        name: "ピッコロバンビーノ",
-        image: "piccolojpg",
-        desc: "軽やかでマイルド。キャラメルのような香ばしさ。朝にぴったり。"
-      }
+      espresso: { name: "エスプレッソクラシコ", image: "espresso.jpg", desc: "力強い味とビターチョコのような甘みを併せ持つ。" },
+      houseblend: { name: "ハウスブレンド", image: "house_blend.jpg", desc: "ほどよい酸味とまろやかなコクが楽しめる、定番ブレンド。毎日飲みたくなるやさしい味わい。" },
+      mochajava: { name: "モカジャバ", image: "mocha_java.jpg", desc: "華やかなアロマとやさしい酸味。リラックスタイムにぴったり。" },
+      ethiopia: { name: "エチオピアモカ", image: "ethiopia_uraga.jpg", desc: "ベリーのように華やかな香りと爽やかな酸味。" },
+      fazenda: { name: "ブラジル ファゼンダ", image: "fazenda.jpg", desc: "ナッツのような香ばしさとコクのある甘み。" },
+      laminita: { name: "コスタリカ ラミニータ", image: "laminita.jpg", desc: "柑橘系の爽やかな酸味とクリアな後味。" },
+      cafemonale: { name: "カフェモナーレ", image: "cafe_monale.jpg", desc: "ミルクに合うまろやかな甘みとやさしいコク。" },
+      french: { name: "フレンチロースト", image: "french_roast.jpg", desc: "スモーキーで深いコク。力強いビターの余韻。" },
+      blackthree: { name: "ブラックスリー", image: "black_three.jpg", desc: "とろっとした口当たり、香ばしさと甘みのバランス。" },
+      piccolo: { name: "ピッコロバンビーノ", image: "piccolo.jpg", desc: "軽やかでマイルド。キャラメルのような香ばしさ。朝にぴったり。" }
     };
 
-    /* 進捗（可変対応）：数直線のみ表示。内部的にはステップ計算 */
+    /* 進捗バー（内部的にステップ計算） */
     let currentStep = 1;
-    let currentTotal = 3; // 初期は3（分岐で動的に変わる）
+    let currentTotal = 3;
 
-    // 各ノードでの合計ステップ推定
-    const TOTAL_BY_NODE = {
-      q1: 3,      // 初期（分岐後に上書き）
-      q2a: 4, q3a: 4, q4a: 4,
-      q2b: 3,
-      q2c: 3, q3c: 3, q3d: 3,
-      result: null
-    };
+    const TOTAL_BY_NODE = { q1:3, q2a:4, q3a:4, q4a:4, q2b:3, q2c:3, q3c:3, q3d:3, result:null };
 
     function setTotalForNode(nodeId){
       const t = TOTAL_BY_NODE[nodeId];
       if (typeof t === 'number') currentTotal = t;
-      const pr = document.querySelector('.prail');
-      pr.setAttribute('aria-valuemax', String(currentTotal));
     }
 
     function updateProgress(){
       const pct = Math.max(0, Math.min(100, (currentStep / currentTotal) * 100));
       document.getElementById('pfiller').style.width = pct + '%';
       document.getElementById('knob').style.left = pct + '%';
-      const pr = document.querySelector('.prail');
-      pr.setAttribute('aria-valuenow', String(currentStep));
     }
 
     function showOnly(id){
@@ -257,8 +206,8 @@
 
     function showResult(key) {
       const bean = beans[key];
-      currentStep += 1; // 結果へ
-      setTotalForNode('result'); // total は現行維持
+      currentStep += 1;
+      setTotalForNode('result');
       document.getElementById("beanName").textContent = bean.name;
       document.getElementById("beanImage").src = bean.image;
       document.getElementById("beanDesc").textContent = bean.desc;
@@ -267,8 +216,7 @@
     }
 
     function restart() {
-      currentStep = 1;
-      currentTotal = 3;
+      currentStep = 1; currentTotal = 3;
       setTotalForNode('q1');
       showOnly("q1");
       updateProgress();
